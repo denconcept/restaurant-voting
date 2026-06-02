@@ -1,0 +1,30 @@
+package com.denconcept.restaurantvoting.restaurant.model;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "menu",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_menu_restaurant_date", columnNames = {"restaurant_id", "menu_date"}))
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Menu {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(name = "menu_date", nullable = false)
+    private LocalDate menuDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id", nullable = false)
+    private Restaurant restaurant;
+}
