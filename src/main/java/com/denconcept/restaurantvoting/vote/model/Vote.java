@@ -33,4 +33,10 @@ public class Vote {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
+
+    public Vote(LocalDate voteDate, User user, Restaurant restaurant) {
+        this.voteDate = voteDate;
+        this.user = user;
+        this.restaurant = restaurant;
+    }
 }
