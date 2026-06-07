@@ -25,7 +25,7 @@ public class VoteService {
     private final RestaurantRepository restaurantRepository;
 
     @Transactional
-    public Vote vote(Integer userId, Integer restaurantId) {
+    public void vote(Integer userId, Integer restaurantId) {
         LocalDate today = LocalDate.now();
         Optional<Vote> voteOptional = voteRepository.findByUserIdAndVoteDate(userId, today);
         Restaurant restaurant = restaurantRepository.getReferenceById(restaurantId);
@@ -35,10 +35,10 @@ public class VoteService {
             }
             Vote vote = voteOptional.get();
             vote.setRestaurant(restaurant);
-            return vote;
+            return;
         }
         User user = userRepository.getReferenceById(userId);
         Vote vote = new Vote(today, user, restaurant);
-        return voteRepository.save(vote);
+        voteRepository.save(vote);
     }
 }
