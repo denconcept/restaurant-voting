@@ -30,4 +30,10 @@ public class MenuItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;
+
+    public MenuItem(String name, BigDecimal price, Menu menu) {
+        this.name = name;
+        this.price = price;
+        this.menu = menu;
+    }
 }
