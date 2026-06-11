@@ -17,6 +17,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.denconcept.restaurantvoting.common.validation.ValidationUtil.checkIsNew;
+
 @RestController
 @RequestMapping(value = AdminMenuItemController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ public class AdminMenuItemController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AdminMenuItemTo> createWithLocation(@RequestBody AdminMenuItemTo adminMenuItemTo) {
+        checkIsNew(adminMenuItemTo);
         Menu menu = menuRepository.getReferenceById(adminMenuItemTo.getMenuId());
         MenuItem menuItem = new MenuItem(adminMenuItemTo.getName(), adminMenuItemTo.getPrice(), menu);
         MenuItem created = menuItemRepository.save(menuItem);

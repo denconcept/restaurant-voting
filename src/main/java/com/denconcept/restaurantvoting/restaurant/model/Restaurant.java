@@ -1,5 +1,6 @@
 package com.denconcept.restaurantvoting.restaurant.model;
 
+import com.denconcept.restaurantvoting.common.HasId;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Restaurant {
+public class Restaurant implements HasId {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

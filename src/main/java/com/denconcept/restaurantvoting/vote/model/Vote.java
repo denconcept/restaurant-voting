@@ -1,5 +1,6 @@
 package com.denconcept.restaurantvoting.vote.model;
 
+import com.denconcept.restaurantvoting.common.HasId;
 import com.denconcept.restaurantvoting.restaurant.model.Restaurant;
 import com.denconcept.restaurantvoting.user.model.User;
 import jakarta.persistence.*;
@@ -17,7 +18,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Vote {
+public class Vote implements HasId {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

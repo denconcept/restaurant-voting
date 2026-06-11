@@ -18,6 +18,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.denconcept.restaurantvoting.common.validation.ValidationUtil.checkIsNew;
+
 @RestController
 @RequestMapping(value = AdminMenuController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ public class AdminMenuController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MenuTo> createWithLocation(@RequestBody MenuTo menuTo) {
+        checkIsNew(menuTo);
         LocalDate menuDate = menuTo.getMenuDate();
         Restaurant restaurant = restaurantRepository.getReferenceById(menuTo.getRestaurantId());
         Menu menu = new Menu(menuDate, restaurant);

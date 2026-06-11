@@ -1,15 +1,16 @@
 package com.denconcept.restaurantvoting.restaurant.to;
 
+import com.denconcept.restaurantvoting.common.HasId;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Getter
-@NoArgsConstructor
+@Setter
 @AllArgsConstructor
-public class AdminMenuItemTo {
+public class AdminMenuItemTo implements HasId {
 
     private Integer id;
     private String name;
