@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Getter
 @RequiredArgsConstructor
-public class MenuTo {
+public class AdminMenuTo {
 
     private final LocalDate menuDate;
     private final Integer restaurantId;
