@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+import static com.denconcept.restaurantvoting.common.validation.ValidationUtil.assureIdConsistent;
 import static com.denconcept.restaurantvoting.common.validation.ValidationUtil.checkIsNew;
 
 @RestController
@@ -44,9 +45,10 @@ public class AdminRestaurantController {
         return restaurantRepository.findAll();
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Restaurant restaurant) {
+    public void update(@RequestBody Restaurant restaurant, @PathVariable int id) {
+        assureIdConsistent(restaurant, id);
         restaurantRepository.save(restaurant);
     }
 
