@@ -2,6 +2,10 @@ package com.denconcept.restaurantvoting.user.model;
 
 import com.denconcept.restaurantvoting.common.HasId;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,12 +25,18 @@ public class User implements HasId {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Email
+    @NotBlank
+    @Size(max = 64)
     @Column(nullable = false, unique = true)
     private String email;
 
+    @NotBlank
+    @Size(max = 128)
     @Column(nullable = false)
     private String password;
 
+    @NotNull
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_role",

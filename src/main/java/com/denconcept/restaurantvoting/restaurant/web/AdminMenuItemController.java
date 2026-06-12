@@ -6,6 +6,7 @@ import com.denconcept.restaurantvoting.restaurant.model.MenuItem;
 import com.denconcept.restaurantvoting.restaurant.repository.MenuItemRepository;
 import com.denconcept.restaurantvoting.restaurant.repository.MenuRepository;
 import com.denconcept.restaurantvoting.restaurant.to.AdminMenuItemTo;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,7 +28,7 @@ public class AdminMenuItemController {
     private final MenuRepository menuRepository;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> createWithLocation(@RequestBody AdminMenuItemTo adminMenuItemTo) {
+    public ResponseEntity<Void> createWithLocation(@Valid @RequestBody AdminMenuItemTo adminMenuItemTo) {
         Menu menu = menuRepository.getReferenceById(adminMenuItemTo.getMenuId());
         MenuItem menuItem = new MenuItem(adminMenuItemTo.getName(), adminMenuItemTo.getPrice(), menu);
         MenuItem created = menuItemRepository.save(menuItem);
@@ -58,7 +59,7 @@ public class AdminMenuItemController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody AdminMenuItemTo adminMenuItemTo, @PathVariable int id) {
+    public void update(@Valid @RequestBody AdminMenuItemTo adminMenuItemTo, @PathVariable int id) {
         MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("MenuItem not found with id = " + id));
         menuItem.setName(adminMenuItemTo.getName());

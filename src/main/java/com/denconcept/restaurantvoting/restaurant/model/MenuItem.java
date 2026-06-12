@@ -2,6 +2,10 @@ package com.denconcept.restaurantvoting.restaurant.model;
 
 import com.denconcept.restaurantvoting.common.HasId;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,12 +26,17 @@ public class MenuItem implements HasId {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank
+    @Size(max = 255)
     @Column(nullable = false)
     private String name;
 
+    @NotNull
+    @Positive
     @Column(nullable = false, precision = 7, scale = 2)
     private BigDecimal price;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;

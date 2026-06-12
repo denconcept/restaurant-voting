@@ -6,6 +6,7 @@ import com.denconcept.restaurantvoting.restaurant.model.Restaurant;
 import com.denconcept.restaurantvoting.restaurant.repository.MenuRepository;
 import com.denconcept.restaurantvoting.restaurant.repository.RestaurantRepository;
 import com.denconcept.restaurantvoting.restaurant.to.AdminMenuTo;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,7 +29,7 @@ public class AdminMenuController {
     private final RestaurantRepository restaurantRepository;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> createWithLocation(@RequestBody AdminMenuTo adminMenuTo) {
+    public ResponseEntity<Void> createWithLocation(@Valid @RequestBody AdminMenuTo adminMenuTo) {
         LocalDate menuDate = adminMenuTo.getMenuDate();
         Restaurant restaurant = restaurantRepository.getReferenceById(adminMenuTo.getRestaurantId());
         Menu menu = new Menu(menuDate, restaurant);
@@ -59,7 +60,7 @@ public class AdminMenuController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody AdminMenuTo adminMenuTo, @PathVariable int id) {
+    public void update(@Valid @RequestBody AdminMenuTo adminMenuTo, @PathVariable int id) {
         Menu menu = menuRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Menu not found with id=" + id));
         menu.setMenuDate(adminMenuTo.getMenuDate());
