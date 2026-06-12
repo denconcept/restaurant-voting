@@ -1,14 +1,14 @@
 package com.denconcept.restaurantvoting.restaurant.to;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MenuItemTo {
 
-    private String name;
-    private BigDecimal price;
+    private final String name;
+    private final BigDecimal price;
 }

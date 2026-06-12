@@ -1,18 +1,14 @@
 package com.denconcept.restaurantvoting.restaurant.to;
 
-import com.denconcept.restaurantvoting.common.HasId;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 
 @Getter
-@Setter
-@AllArgsConstructor
-public class MenuTo implements HasId {
+@RequiredArgsConstructor
+public class MenuTo {
 
-    private Integer id;
-    private LocalDate menuDate;
-    private Integer restaurantId;
+    private final LocalDate menuDate;
+    private final Integer restaurantId;
 }
