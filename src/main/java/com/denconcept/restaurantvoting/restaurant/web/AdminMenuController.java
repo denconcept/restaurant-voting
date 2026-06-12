@@ -18,8 +18,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.denconcept.restaurantvoting.common.validation.ValidationUtil.checkIsNew;
-
 @RestController
 @RequestMapping(value = AdminMenuController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -30,24 +28,22 @@ public class AdminMenuController {
     private final RestaurantRepository restaurantRepository;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MenuTo> createWithLocation(@RequestBody MenuTo menuTo) {
-        checkIsNew(menuTo);
+    public ResponseEntity<Void> createWithLocation(@RequestBody MenuTo menuTo) {
         LocalDate menuDate = menuTo.getMenuDate();
         Restaurant restaurant = restaurantRepository.getReferenceById(menuTo.getRestaurantId());
         Menu menu = new Menu(menuDate, restaurant);
         Menu created = menuRepository.save(menu);
-        MenuTo createdTo = new MenuTo(created.getId(), created.getMenuDate(), created.getRestaurant().getId());
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
-                .buildAndExpand(createdTo.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(createdTo);
+                .buildAndExpand(created.getId()).toUri();
+        return ResponseEntity.created(uriOfNewResource).build();
     }
 
     @GetMapping("/{id}")
     public MenuTo get(@PathVariable Integer id) {
         Menu menu = menuRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Menu not found with id=" + id));
-        return new MenuTo(menu.getId(), menu.getMenuDate(), menu.getRestaurant().getId());
+                .orElseThrow(() -> new NotFoundException("Menu not found with id = " + id));
+        return new MenuTo(menu.getMenuDate(), menu.getRestaurant().getId());
     }
 
     @GetMapping
@@ -55,21 +51,19 @@ public class AdminMenuController {
         List<Menu> menus = menuRepository.findAll();
         List<MenuTo> menuTos = new ArrayList<>();
         for (Menu menu : menus) {
-            MenuTo menuTo = new MenuTo(menu.getId(), menu.getMenuDate(), menu.getRestaurant().getId());
+            MenuTo menuTo = new MenuTo(menu.getMenuDate(), menu.getRestaurant().getId());
             menuTos.add(menuTo);
         }
         return menuTos;
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody MenuTo menuTo) {
-        Integer id = menuTo.getId();
+    public void update(@RequestBody MenuTo menuTo, @PathVariable int id) {
         Menu menu = menuRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Menu not found with id=" + id));
         menu.setMenuDate(menuTo.getMenuDate());
-        Restaurant restaurant = restaurantRepository.getReferenceById(menuTo.getRestaurantId());
-        menu.setRestaurant(restaurant);
+        menu.setRestaurant(restaurantRepository.getReferenceById(menuTo.getRestaurantId()));
         menuRepository.save(menu);
     }
 

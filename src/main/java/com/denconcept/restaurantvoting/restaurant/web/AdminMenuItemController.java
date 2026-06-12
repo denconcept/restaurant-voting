@@ -17,8 +17,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.denconcept.restaurantvoting.common.validation.ValidationUtil.checkIsNew;
-
 @RestController
 @RequestMapping(value = AdminMenuItemController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -29,24 +27,21 @@ public class AdminMenuItemController {
     private final MenuRepository menuRepository;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminMenuItemTo> createWithLocation(@RequestBody AdminMenuItemTo adminMenuItemTo) {
-        checkIsNew(adminMenuItemTo);
+    public ResponseEntity<Void> createWithLocation(@RequestBody AdminMenuItemTo adminMenuItemTo) {
         Menu menu = menuRepository.getReferenceById(adminMenuItemTo.getMenuId());
         MenuItem menuItem = new MenuItem(adminMenuItemTo.getName(), adminMenuItemTo.getPrice(), menu);
         MenuItem created = menuItemRepository.save(menuItem);
-        AdminMenuItemTo createdTo = new AdminMenuItemTo(
-                created.getId(), created.getName(), created.getPrice(), created.getMenu().getId());
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
-                .buildAndExpand(createdTo.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(createdTo);
+                .buildAndExpand(created.getId()).toUri();
+        return ResponseEntity.created(uriOfNewResource).build();
     }
 
     @GetMapping("/{id}")
     public AdminMenuItemTo get(@PathVariable Integer id) {
         MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("MenuItem not found with id=" + id));
-        return new AdminMenuItemTo(menuItem.getId(), menuItem.getName(), menuItem.getPrice(), menuItem.getMenu().getId());
+        return new AdminMenuItemTo(menuItem.getName(), menuItem.getPrice(), menuItem.getMenu().getId());
     }
 
     @GetMapping
@@ -54,23 +49,21 @@ public class AdminMenuItemController {
         List<MenuItem> menuItems = menuItemRepository.findAll();
         List<AdminMenuItemTo> menuItemTos = new ArrayList<>();
         for (MenuItem menuItem : menuItems) {
-            AdminMenuItemTo adminMenuItemTo = new AdminMenuItemTo(
-                    menuItem.getId(), menuItem.getName(), menuItem.getPrice(), menuItem.getMenu().getId());
+            AdminMenuItemTo adminMenuItemTo =
+                    new AdminMenuItemTo(menuItem.getName(), menuItem.getPrice(), menuItem.getMenu().getId());
             menuItemTos.add(adminMenuItemTo);
         }
         return menuItemTos;
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody AdminMenuItemTo adminMenuItemTo) {
-        Integer id = adminMenuItemTo.getId();
+    public void update(@RequestBody AdminMenuItemTo adminMenuItemTo, @PathVariable int id) {
         MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("MenuItem not found with id = " + id));
         menuItem.setName(adminMenuItemTo.getName());
         menuItem.setPrice(adminMenuItemTo.getPrice());
-        Menu menu = menuRepository.getReferenceById(adminMenuItemTo.getMenuId());
-        menuItem.setMenu(menu);
+        menuItem.setMenu(menuRepository.getReferenceById(adminMenuItemTo.getMenuId()));
         menuItemRepository.save(menuItem);
     }
 
