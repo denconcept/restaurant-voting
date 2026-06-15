@@ -29,7 +29,8 @@ public class AdminMenuItemController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createWithLocation(@Valid @RequestBody AdminMenuItemTo adminMenuItemTo) {
-        Menu menu = menuRepository.getReferenceById(adminMenuItemTo.getMenuId());
+        Menu menu = menuRepository.findById(adminMenuItemTo.getMenuId())
+                .orElseThrow(() -> new NotFoundException("Menu not found with id = " + adminMenuItemTo.getMenuId()));
         MenuItem menuItem = new MenuItem(adminMenuItemTo.getName(), adminMenuItemTo.getPrice(), menu);
         MenuItem created = menuItemRepository.save(menuItem);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -41,7 +42,7 @@ public class AdminMenuItemController {
     @GetMapping("/{id}")
     public AdminMenuItemTo get(@PathVariable Integer id) {
         MenuItem menuItem = menuItemRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("MenuItem not found with id=" + id));
+                .orElseThrow(() -> new NotFoundException("MenuItem not found with id = " + id));
         return new AdminMenuItemTo(menuItem.getName(), menuItem.getPrice(), menuItem.getMenu().getId());
     }
 
@@ -64,13 +65,17 @@ public class AdminMenuItemController {
                 .orElseThrow(() -> new NotFoundException("MenuItem not found with id = " + id));
         menuItem.setName(adminMenuItemTo.getName());
         menuItem.setPrice(adminMenuItemTo.getPrice());
-        menuItem.setMenu(menuRepository.getReferenceById(adminMenuItemTo.getMenuId()));
+        Menu menu = menuRepository.findById(adminMenuItemTo.getMenuId())
+                .orElseThrow(() -> new NotFoundException("Menu not found with id = " + adminMenuItemTo.getMenuId()));
+        menuItem.setMenu(menu);
         menuItemRepository.save(menuItem);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
-        menuItemRepository.deleteById(id);
+        MenuItem menuItem = menuItemRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("MenuItem not found with id = " + id));
+        menuItemRepository.delete(menuItem);
     }
 }

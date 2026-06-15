@@ -31,7 +31,9 @@ public class AdminMenuController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createWithLocation(@Valid @RequestBody AdminMenuTo adminMenuTo) {
         LocalDate menuDate = adminMenuTo.getMenuDate();
-        Restaurant restaurant = restaurantRepository.getReferenceById(adminMenuTo.getRestaurantId());
+        Restaurant restaurant = restaurantRepository.findById(adminMenuTo.getRestaurantId())
+                .orElseThrow(() -> new NotFoundException(
+                        "Restaurant not found with id = " + adminMenuTo.getRestaurantId()));
         Menu menu = new Menu(menuDate, restaurant);
         Menu created = menuRepository.save(menu);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -62,15 +64,20 @@ public class AdminMenuController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody AdminMenuTo adminMenuTo, @PathVariable int id) {
         Menu menu = menuRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Menu not found with id=" + id));
+                .orElseThrow(() -> new NotFoundException("Menu not found with id = " + id));
         menu.setMenuDate(adminMenuTo.getMenuDate());
-        menu.setRestaurant(restaurantRepository.getReferenceById(adminMenuTo.getRestaurantId()));
+        Restaurant restaurant = restaurantRepository.findById(adminMenuTo.getRestaurantId())
+                .orElseThrow(() -> new NotFoundException(
+                        "Restaurant not found with id = " + adminMenuTo.getRestaurantId()));
+        menu.setRestaurant(restaurant);
         menuRepository.save(menu);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
-        menuRepository.deleteById(id);
+        Menu menu = menuRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Menu not found with id=" + id));
+        menuRepository.delete(menu);
     }
 }

@@ -38,7 +38,7 @@ public class AdminRestaurantController {
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable Integer id) {
         return restaurantRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Restaurant not found with id=" + id));
+                .orElseThrow(() -> new NotFoundException("Restaurant not found with id = " + id));
     }
 
     @GetMapping
@@ -49,13 +49,18 @@ public class AdminRestaurantController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
+        Restaurant existing = restaurantRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Restaurant not found with id = " + id));
         assureIdConsistent(restaurant, id);
-        restaurantRepository.save(restaurant);
+        existing.setName(restaurant.getName());
+        restaurantRepository.save(existing);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
-        restaurantRepository.deleteById(id);
+        Restaurant restaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Restaurant not found with id = " + id));
+        restaurantRepository.delete(restaurant);
     }
 }
