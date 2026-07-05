@@ -5,6 +5,7 @@ import com.denconcept.restaurantvoting.restaurant.model.Restaurant;
 import com.denconcept.restaurantvoting.restaurant.repository.RestaurantRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
 import static com.denconcept.restaurantvoting.common.validation.ValidationUtil.assureIdConsistent;
 import static com.denconcept.restaurantvoting.common.validation.ValidationUtil.checkIsNew;
 
+@Slf4j
 @RestController
 @RequestMapping(value = AdminRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public class AdminRestaurantController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
+        log.info("create {}", restaurant);
         checkIsNew(restaurant);
         Restaurant created = restaurantRepository.save(restaurant);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -49,6 +52,7 @@ public class AdminRestaurantController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
+        log.info("update {} with id = {}", restaurant, id);
         Restaurant existing = restaurantRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Restaurant not found with id = " + id));
         assureIdConsistent(restaurant, id);
@@ -59,6 +63,7 @@ public class AdminRestaurantController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
+        log.info("delete {}", id);
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Restaurant not found with id = " + id));
         restaurantRepository.delete(restaurant);

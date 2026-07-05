@@ -7,6 +7,7 @@ import com.denconcept.restaurantvoting.restaurant.repository.MenuRepository;
 import com.denconcept.restaurantvoting.restaurant.to.MenuItemTo;
 import com.denconcept.restaurantvoting.restaurant.to.RestaurantMenuTo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MenuService {
@@ -22,6 +24,7 @@ public class MenuService {
 
     @Transactional(readOnly = true)
     public List<RestaurantMenuTo> getRestaurantsWithMenu(LocalDate menuDate) {
+        log.info("Get restaurants with menu by {}", menuDate);
         List<RestaurantMenuTo> restaurantMenuTos = new ArrayList<>();
         List<Menu> menus = menuRepository.findAllByMenuDate(menuDate);
         for (Menu menu : menus) {

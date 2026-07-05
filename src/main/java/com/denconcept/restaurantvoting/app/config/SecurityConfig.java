@@ -4,6 +4,7 @@ import com.denconcept.restaurantvoting.app.AuthUser;
 import com.denconcept.restaurantvoting.user.model.User;
 import com.denconcept.restaurantvoting.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -15,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Optional;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -24,6 +26,7 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> {
+            log.debug("Authenticating '{}'", email);
             Optional<User> optionalUser = userRepository.findByEmailIgnoreCase(email);
             return new AuthUser(optionalUser.orElseThrow(
                     () -> new UsernameNotFoundException("User not found with email = " + email)));

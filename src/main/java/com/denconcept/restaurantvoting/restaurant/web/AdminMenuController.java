@@ -8,6 +8,7 @@ import com.denconcept.restaurantvoting.restaurant.repository.RestaurantRepositor
 import com.denconcept.restaurantvoting.restaurant.to.AdminMenuTo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(value = AdminMenuController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class AdminMenuController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createWithLocation(@Valid @RequestBody AdminMenuTo adminMenuTo) {
+        log.info("create {}", adminMenuTo);
         LocalDate menuDate = adminMenuTo.getMenuDate();
         Restaurant restaurant = restaurantRepository.findById(adminMenuTo.getRestaurantId())
                 .orElseThrow(() -> new NotFoundException(
@@ -63,6 +66,7 @@ public class AdminMenuController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody AdminMenuTo adminMenuTo, @PathVariable int id) {
+        log.info("update {} with id = {}", adminMenuTo, id);
         Menu menu = menuRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Menu not found with id = " + id));
         menu.setMenuDate(adminMenuTo.getMenuDate());
@@ -76,6 +80,7 @@ public class AdminMenuController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
+        log.info("delete {}", id);
         Menu menu = menuRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Menu not found with id=" + id));
         menuRepository.delete(menu);

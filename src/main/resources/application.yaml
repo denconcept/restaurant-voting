@@ -17,3 +17,9 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+logging:
+  level:
+    root: WARN
+    com.denconcept.restaurantvoting: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG

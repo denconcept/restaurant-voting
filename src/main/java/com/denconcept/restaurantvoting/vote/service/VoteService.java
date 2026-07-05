@@ -9,6 +9,7 @@ import com.denconcept.restaurantvoting.user.repository.UserRepository;
 import com.denconcept.restaurantvoting.vote.model.Vote;
 import com.denconcept.restaurantvoting.vote.repository.VoteRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VoteService {
@@ -33,16 +35,19 @@ public class VoteService {
                 .orElseThrow(() -> new NotFoundException("Restaurant not found with id = " + restaurantId));
         if (voteOptional.isPresent()) {
             if (!LocalTime.now().isBefore(DEADLINE)) {
+                log.warn("User {} attempted to change vote after {}", userId, DEADLINE);
                 throw new VotingDeadlineExceededException("You can't re-vote after " + DEADLINE);
             }
             Vote vote = voteOptional.get();
             vote.setRestaurant(restaurant);
             voteRepository.save(vote);
+            log.info("User {} changed vote to restaurant {}", userId, restaurantId);
             return;
         }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id = " + userId));
         Vote vote = new Vote(today, user, restaurant);
         voteRepository.save(vote);
+        log.info("User {} voted for restaurant {}", userId, restaurantId);
     }
 }

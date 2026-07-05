@@ -4,6 +4,7 @@ import com.denconcept.restaurantvoting.common.error.ErrorType;
 import com.denconcept.restaurantvoting.common.error.IllegalRequestDataException;
 import com.denconcept.restaurantvoting.common.error.NotFoundException;
 import com.denconcept.restaurantvoting.common.error.VotingDeadlineExceededException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class RestExceptionHandler {
 
@@ -32,6 +34,7 @@ public class RestExceptionHandler {
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
+        log.warn("Request validation failed: {}", errors);
         ErrorType errorType = ErrorType.INVALID_DATA;
         ProblemDetail problem = ProblemDetail.forStatus(errorType.getStatus());
         problem.setTitle(errorType.getTitle());
@@ -49,6 +52,7 @@ public class RestExceptionHandler {
             VotingDeadlineExceededException.class
     })
     public ResponseEntity<ProblemDetail> handleBusinessException(Exception ex) {
+        log.warn("Business error: {}", ex.getMessage());
         ErrorType errorType = HTTP_STATUS_MAP.getOrDefault(ex.getClass(), ErrorType.APP_ERROR);
         ProblemDetail problem = ProblemDetail.forStatus(errorType.getStatus());
         problem.setTitle(errorType.getTitle());
@@ -60,6 +64,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleUnexpectedException(Exception ex) {
+        log.error("Unexpected server error", ex);
         ErrorType errorType = ErrorType.APP_ERROR;
         ProblemDetail problem = ProblemDetail.forStatus(errorType.getStatus());
         problem.setTitle(errorType.getTitle());
