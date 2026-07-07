@@ -6,6 +6,7 @@ import com.denconcept.restaurantvoting.restaurant.repository.RestaurantRepositor
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import static com.denconcept.restaurantvoting.common.validation.ValidationUtil.assureIdConsistent;
 import static com.denconcept.restaurantvoting.common.validation.ValidationUtil.checkIsNew;
+import static com.denconcept.restaurantvoting.restaurant.service.MenuService.MENUS_CACHE;
 
 @Slf4j
 @RestController
@@ -27,6 +29,7 @@ public class AdminRestaurantController {
     public static final String REST_URL = "/api/admin/restaurants";
     private final RestaurantRepository restaurantRepository;
 
+    @CacheEvict(value = MENUS_CACHE, allEntries = true)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant);
@@ -49,6 +52,7 @@ public class AdminRestaurantController {
         return restaurantRepository.findAll();
     }
 
+    @CacheEvict(value = MENUS_CACHE, allEntries = true)
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
@@ -60,6 +64,7 @@ public class AdminRestaurantController {
         restaurantRepository.save(existing);
     }
 
+    @CacheEvict(value = MENUS_CACHE, allEntries = true)
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {

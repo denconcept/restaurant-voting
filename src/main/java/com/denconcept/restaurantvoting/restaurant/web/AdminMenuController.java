@@ -9,6 +9,7 @@ import com.denconcept.restaurantvoting.restaurant.to.AdminMenuTo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.denconcept.restaurantvoting.restaurant.service.MenuService.MENUS_CACHE;
+
 @Slf4j
 @RestController
 @RequestMapping(value = AdminMenuController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -30,6 +33,7 @@ public class AdminMenuController {
     private final MenuRepository menuRepository;
     private final RestaurantRepository restaurantRepository;
 
+    @CacheEvict(value = MENUS_CACHE, allEntries = true)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createWithLocation(@Valid @RequestBody AdminMenuTo adminMenuTo) {
         log.info("create {}", adminMenuTo);
@@ -63,6 +67,7 @@ public class AdminMenuController {
         return adminMenuTos;
     }
 
+    @CacheEvict(value = MENUS_CACHE, allEntries = true)
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody AdminMenuTo adminMenuTo, @PathVariable int id) {
@@ -77,6 +82,7 @@ public class AdminMenuController {
         menuRepository.save(menu);
     }
 
+    @CacheEvict(value = MENUS_CACHE, allEntries = true)
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {

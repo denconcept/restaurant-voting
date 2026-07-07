@@ -8,6 +8,7 @@ import com.denconcept.restaurantvoting.restaurant.to.MenuItemTo;
 import com.denconcept.restaurantvoting.restaurant.to.RestaurantMenuTo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +21,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MenuService {
 
+    public static final String MENUS_CACHE = "menus";
+
     private final MenuRepository menuRepository;
 
+    @Cacheable(MENUS_CACHE)
     @Transactional(readOnly = true)
     public List<RestaurantMenuTo> getRestaurantsWithMenu(LocalDate menuDate) {
         log.info("Get restaurants with menu by {}", menuDate);
