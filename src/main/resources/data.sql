@@ -14,10 +14,10 @@ VALUES ('McDonalds'),
        ('Subway');
 
 INSERT INTO MENU (menu_date, restaurant_id)
-VALUES ('2026-06-07', 1),
-       ('2026-06-07', 2),
-       ('2026-06-07', 3),
-       ('2026-06-07', 4);
+VALUES (CURRENT_DATE, 1),
+       (CURRENT_DATE, 2),
+       (CURRENT_DATE, 3),
+       (CURRENT_DATE, 4);
 
 INSERT INTO MENU_ITEM (name, price, menu_id)
 VALUES ('Big Mac', 6.99, 1),

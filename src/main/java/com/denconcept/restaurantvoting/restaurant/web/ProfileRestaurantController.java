@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -21,7 +20,7 @@ public class ProfileRestaurantController {
     private final MenuService menuService;
 
     @GetMapping
-    public List<RestaurantMenuTo> getByDate(@RequestParam LocalDate menuDate) {
-        return menuService.getRestaurantsWithMenu(menuDate);
+    public List<RestaurantMenuTo> getTodayRestaurants() {
+        return menuService.getRestaurantsWithMenu(LocalDate.now());
     }
 }
