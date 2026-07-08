@@ -1,9 +1,7 @@
 package com.denconcept.restaurantvoting.app.config;
 
+import com.denconcept.restaurantvoting.common.error.AppException;
 import com.denconcept.restaurantvoting.common.error.ErrorType;
-import com.denconcept.restaurantvoting.common.error.IllegalRequestDataException;
-import com.denconcept.restaurantvoting.common.error.NotFoundException;
-import com.denconcept.restaurantvoting.common.error.VotingDeadlineExceededException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,13 +20,13 @@ import java.util.Map;
 @RestControllerAdvice
 public class RestExceptionHandler {
 
-    private static final Map<Class<? extends Throwable>, ErrorType> HTTP_STATUS_MAP =
-            Map.of(
-                    IllegalRequestDataException.class, ErrorType.INVALID_DATA,
-                    NotFoundException.class, ErrorType.NOT_FOUND,
-                    DataIntegrityViolationException.class, ErrorType.DATA_CONFLICT,
-                    VotingDeadlineExceededException.class, ErrorType.INVALID_DATA
-            );
+    @ExceptionHandler(AppException.class)
+    public ResponseEntity<ProblemDetail> handleBusinessException(AppException ex, HttpServletRequest request) {
+        log.warn("Business error: {}", ex.getMessage());
+        ErrorType errorType = ex.getErrorType();
+        ProblemDetail problem = createProblemDetail(errorType, ex.getMessage(), request);
+        return ResponseEntity.status(errorType.getStatus()).body(problem);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handleValidationException(
@@ -44,16 +42,12 @@ public class RestExceptionHandler {
         return ResponseEntity.status(errorType.getStatus()).body(problem);
     }
 
-    @ExceptionHandler({
-            IllegalRequestDataException.class,
-            NotFoundException.class,
-            DataIntegrityViolationException.class,
-            VotingDeadlineExceededException.class
-    })
-    public ResponseEntity<ProblemDetail> handleBusinessException(Exception ex, HttpServletRequest request) {
-        log.warn("Business error: {}", ex.getMessage());
-        ErrorType errorType = HTTP_STATUS_MAP.getOrDefault(ex.getClass(), ErrorType.APP_ERROR);
-        ProblemDetail problem = createProblemDetail(errorType, ex.getMessage(), request);
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ProblemDetail> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex, HttpServletRequest request) {
+        log.warn("Data integrity violation", ex);
+        ErrorType errorType = ErrorType.DATA_CONFLICT;
+        ProblemDetail problem = createProblemDetail(errorType, "Data conflict", request);
         return ResponseEntity.status(errorType.getStatus()).body(problem);
     }
 
