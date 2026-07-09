@@ -1,9 +1,8 @@
 package com.denconcept.restaurantvoting.restaurant.model;
 
-import com.denconcept.restaurantvoting.common.HasId;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import com.denconcept.restaurantvoting.common.model.NamedEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,14 +13,5 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Restaurant implements HasId {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @NotBlank
-    @Size(max = 128)
-    @Column(nullable = false)
-    private String name;
+public class Restaurant extends NamedEntity {
 }

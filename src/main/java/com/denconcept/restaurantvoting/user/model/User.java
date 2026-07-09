@@ -1,6 +1,6 @@
 package com.denconcept.restaurantvoting.user.model;
 
-import com.denconcept.restaurantvoting.common.HasId;
+import com.denconcept.restaurantvoting.common.model.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -19,11 +19,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User implements HasId {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class User extends BaseEntity {
 
     @Email
     @NotBlank

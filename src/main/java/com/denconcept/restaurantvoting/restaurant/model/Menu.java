@@ -1,6 +1,6 @@
 package com.denconcept.restaurantvoting.restaurant.model;
 
-import com.denconcept.restaurantvoting.common.HasId;
+import com.denconcept.restaurantvoting.common.model.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -18,11 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Menu implements HasId {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Menu extends BaseEntity {
 
     @NotNull
     @Column(name = "menu_date", nullable = false)
