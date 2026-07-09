@@ -1,7 +1,5 @@
 package com.denconcept.restaurantvoting.restaurant.service;
 
-import com.denconcept.restaurantvoting.restaurant.model.Menu;
-import com.denconcept.restaurantvoting.restaurant.model.MenuItem;
 import com.denconcept.restaurantvoting.restaurant.model.Restaurant;
 import com.denconcept.restaurantvoting.restaurant.repository.MenuRepository;
 import com.denconcept.restaurantvoting.restaurant.to.MenuItemTo;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -28,21 +25,15 @@ public class MenuService {
     @Cacheable(MENUS_CACHE)
     @Transactional(readOnly = true)
     public List<RestaurantMenuTo> getRestaurantsWithMenu(LocalDate menuDate) {
-        log.info("Get restaurants with menu by {}", menuDate);
-        List<RestaurantMenuTo> restaurantMenuTos = new ArrayList<>();
-        List<Menu> menus = menuRepository.findAllByMenuDate(menuDate);
-        for (Menu menu : menus) {
-            List<MenuItemTo> menuItemTos = new ArrayList<>();
-            List<MenuItem> menuItems = menu.getMenuItems();
-            for (MenuItem menuItem : menuItems) {
-                MenuItemTo menuItemTo = new MenuItemTo(menuItem.getName(), menuItem.getPrice());
-                menuItemTos.add(menuItemTo);
-            }
-            Restaurant restaurant = menu.getRestaurant();
-            RestaurantMenuTo restaurantMenuTo = new RestaurantMenuTo(
-                    restaurant.getId(), restaurant.getName(), menuItemTos);
-            restaurantMenuTos.add(restaurantMenuTo);
-        }
-        return restaurantMenuTos;
+        log.info("Get restaurants with menu for {}", menuDate);
+        return menuRepository.findAllByMenuDate(menuDate).stream()
+                .map(menu -> {
+                    List<MenuItemTo> menuItems = menu.getMenuItems().stream()
+                            .map(menuItem -> new MenuItemTo(menuItem.getName(), menuItem.getPrice()))
+                            .toList();
+                    Restaurant restaurant = menu.getRestaurant();
+                    return new RestaurantMenuTo(restaurant.getId(), restaurant.getName(), menuItems);
+                })
+                .toList();
     }
 }

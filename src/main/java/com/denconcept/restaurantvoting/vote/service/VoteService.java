@@ -29,16 +29,11 @@ public class VoteService {
     @Transactional
     public void vote(Integer userId, Integer restaurantId) {
         LocalDate today = LocalDate.now();
-        Optional<Vote> voteOptional = voteRepository.findByUserIdAndVoteDate(userId, today);
         Restaurant restaurant = restaurantRepository.getExisted(restaurantId);
-        if (voteOptional.isPresent()) {
-            if (!LocalTime.now().isBefore(DEADLINE)) {
-                log.warn("User {} attempted to change vote after {}", userId, DEADLINE);
-                throw new VotingDeadlineExceededException("You can't re-vote after " + DEADLINE);
-            }
-            Vote vote = voteOptional.get();
-            vote.setRestaurant(restaurant);
-            voteRepository.save(vote);
+        Optional<Vote> existingVote = voteRepository.findByUserIdAndVoteDate(userId, today);
+        if (existingVote.isPresent()) {
+            checkVotingDeadline();
+            existingVote.get().setRestaurant(restaurant);
             log.info("User {} changed vote to restaurant {}", userId, restaurantId);
             return;
         }
@@ -46,5 +41,12 @@ public class VoteService {
         Vote vote = new Vote(today, user, restaurant);
         voteRepository.save(vote);
         log.info("User {} voted for restaurant {}", userId, restaurantId);
+    }
+
+    private void checkVotingDeadline() {
+        if (!LocalTime.now().isBefore(DEADLINE)) {
+            log.warn("Attempt to change vote after {}", DEADLINE);
+            throw new VotingDeadlineExceededException("You can't re-vote after " + DEADLINE);
+        }
     }
 }
