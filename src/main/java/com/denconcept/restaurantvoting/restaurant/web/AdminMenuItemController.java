@@ -36,9 +36,9 @@ public class AdminMenuItemController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createWithLocation(@Valid @RequestBody AdminMenuItemTo adminMenuItemTo) {
         log.info("create {}", adminMenuItemTo);
-        Menu menu = menuRepository.findById(adminMenuItemTo.getMenuId())
-                .orElseThrow(() -> new NotFoundException("Menu not found with id = " + adminMenuItemTo.getMenuId()));
-        MenuItem menuItem = new MenuItem(adminMenuItemTo.getName(), adminMenuItemTo.getPrice(), menu);
+        Menu menu = menuRepository.findById(adminMenuItemTo.menuId())
+                .orElseThrow(() -> new NotFoundException("Menu not found with id = " + adminMenuItemTo.menuId()));
+        MenuItem menuItem = new MenuItem(adminMenuItemTo.name(), adminMenuItemTo.price(), menu);
         MenuItem created = menuItemRepository.save(menuItem);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -72,10 +72,10 @@ public class AdminMenuItemController {
         log.info("update {} with id = {}", adminMenuItemTo, id);
         MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("MenuItem not found with id = " + id));
-        menuItem.setName(adminMenuItemTo.getName());
-        menuItem.setPrice(adminMenuItemTo.getPrice());
-        Menu menu = menuRepository.findById(adminMenuItemTo.getMenuId())
-                .orElseThrow(() -> new NotFoundException("Menu not found with id = " + adminMenuItemTo.getMenuId()));
+        menuItem.setName(adminMenuItemTo.name());
+        menuItem.setPrice(adminMenuItemTo.price());
+        Menu menu = menuRepository.findById(adminMenuItemTo.menuId())
+                .orElseThrow(() -> new NotFoundException("Menu not found with id = " + adminMenuItemTo.menuId()));
         menuItem.setMenu(menu);
         menuItemRepository.save(menuItem);
     }

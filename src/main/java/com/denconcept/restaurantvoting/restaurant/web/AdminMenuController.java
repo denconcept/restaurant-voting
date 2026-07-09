@@ -37,10 +37,10 @@ public class AdminMenuController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createWithLocation(@Valid @RequestBody AdminMenuTo adminMenuTo) {
         log.info("create {}", adminMenuTo);
-        LocalDate menuDate = adminMenuTo.getMenuDate();
-        Restaurant restaurant = restaurantRepository.findById(adminMenuTo.getRestaurantId())
+        LocalDate menuDate = adminMenuTo.menuDate();
+        Restaurant restaurant = restaurantRepository.findById(adminMenuTo.restaurantId())
                 .orElseThrow(() -> new NotFoundException(
-                        "Restaurant not found with id = " + adminMenuTo.getRestaurantId()));
+                        "Restaurant not found with id = " + adminMenuTo.restaurantId()));
         Menu menu = new Menu(menuDate, restaurant);
         Menu created = menuRepository.save(menu);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -74,10 +74,10 @@ public class AdminMenuController {
         log.info("update {} with id = {}", adminMenuTo, id);
         Menu menu = menuRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Menu not found with id = " + id));
-        menu.setMenuDate(adminMenuTo.getMenuDate());
-        Restaurant restaurant = restaurantRepository.findById(adminMenuTo.getRestaurantId())
+        menu.setMenuDate(adminMenuTo.menuDate());
+        Restaurant restaurant = restaurantRepository.findById(adminMenuTo.restaurantId())
                 .orElseThrow(() -> new NotFoundException(
-                        "Restaurant not found with id = " + adminMenuTo.getRestaurantId()));
+                        "Restaurant not found with id = " + adminMenuTo.restaurantId()));
         menu.setRestaurant(restaurant);
         menuRepository.save(menu);
     }
