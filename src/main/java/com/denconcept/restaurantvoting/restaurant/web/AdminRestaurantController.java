@@ -1,6 +1,5 @@
 package com.denconcept.restaurantvoting.restaurant.web;
 
-import com.denconcept.restaurantvoting.common.error.NotFoundException;
 import com.denconcept.restaurantvoting.restaurant.model.Restaurant;
 import com.denconcept.restaurantvoting.restaurant.repository.RestaurantRepository;
 import jakarta.validation.Valid;
@@ -43,8 +42,7 @@ public class AdminRestaurantController {
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable Integer id) {
-        return restaurantRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Restaurant not found with id = " + id));
+        return restaurantRepository.getExisted(id);
     }
 
     @GetMapping
@@ -57,8 +55,7 @@ public class AdminRestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update {} with id = {}", restaurant, id);
-        Restaurant existing = restaurantRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Restaurant not found with id = " + id));
+        Restaurant existing = restaurantRepository.getExisted(id);
         assureIdConsistent(restaurant, id);
         existing.setName(restaurant.getName());
         restaurantRepository.save(existing);
@@ -69,8 +66,7 @@ public class AdminRestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
         log.info("delete {}", id);
-        Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Restaurant not found with id = " + id));
+        Restaurant restaurant = restaurantRepository.getExisted(id);
         restaurantRepository.delete(restaurant);
     }
 }

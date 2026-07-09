@@ -1,6 +1,5 @@
 package com.denconcept.restaurantvoting.vote.service;
 
-import com.denconcept.restaurantvoting.common.error.NotFoundException;
 import com.denconcept.restaurantvoting.common.error.VotingDeadlineExceededException;
 import com.denconcept.restaurantvoting.restaurant.model.Restaurant;
 import com.denconcept.restaurantvoting.restaurant.repository.RestaurantRepository;
@@ -31,8 +30,7 @@ public class VoteService {
     public void vote(Integer userId, Integer restaurantId) {
         LocalDate today = LocalDate.now();
         Optional<Vote> voteOptional = voteRepository.findByUserIdAndVoteDate(userId, today);
-        Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new NotFoundException("Restaurant not found with id = " + restaurantId));
+        Restaurant restaurant = restaurantRepository.getExisted(restaurantId);
         if (voteOptional.isPresent()) {
             if (!LocalTime.now().isBefore(DEADLINE)) {
                 log.warn("User {} attempted to change vote after {}", userId, DEADLINE);
@@ -44,8 +42,7 @@ public class VoteService {
             log.info("User {} changed vote to restaurant {}", userId, restaurantId);
             return;
         }
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found with id = " + userId));
+        User user = userRepository.getExisted(userId);
         Vote vote = new Vote(today, user, restaurant);
         voteRepository.save(vote);
         log.info("User {} voted for restaurant {}", userId, restaurantId);

@@ -1,6 +1,5 @@
 package com.denconcept.restaurantvoting.restaurant.web;
 
-import com.denconcept.restaurantvoting.common.error.NotFoundException;
 import com.denconcept.restaurantvoting.restaurant.model.Menu;
 import com.denconcept.restaurantvoting.restaurant.model.MenuItem;
 import com.denconcept.restaurantvoting.restaurant.repository.MenuItemRepository;
@@ -36,8 +35,7 @@ public class AdminMenuItemController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createWithLocation(@Valid @RequestBody AdminMenuItemTo adminMenuItemTo) {
         log.info("create {}", adminMenuItemTo);
-        Menu menu = menuRepository.findById(adminMenuItemTo.menuId())
-                .orElseThrow(() -> new NotFoundException("Menu not found with id = " + adminMenuItemTo.menuId()));
+        Menu menu = menuRepository.getExisted(adminMenuItemTo.menuId());
         MenuItem menuItem = new MenuItem(adminMenuItemTo.name(), adminMenuItemTo.price(), menu);
         MenuItem created = menuItemRepository.save(menuItem);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -48,8 +46,7 @@ public class AdminMenuItemController {
 
     @GetMapping("/{id}")
     public AdminMenuItemTo get(@PathVariable Integer id) {
-        MenuItem menuItem = menuItemRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("MenuItem not found with id = " + id));
+        MenuItem menuItem = menuItemRepository.getExisted(id);
         return new AdminMenuItemTo(menuItem.getName(), menuItem.getPrice(), menuItem.getMenu().getId());
     }
 
@@ -70,12 +67,10 @@ public class AdminMenuItemController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody AdminMenuItemTo adminMenuItemTo, @PathVariable int id) {
         log.info("update {} with id = {}", adminMenuItemTo, id);
-        MenuItem menuItem = menuItemRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("MenuItem not found with id = " + id));
+        MenuItem menuItem = menuItemRepository.getExisted(id);
         menuItem.setName(adminMenuItemTo.name());
         menuItem.setPrice(adminMenuItemTo.price());
-        Menu menu = menuRepository.findById(adminMenuItemTo.menuId())
-                .orElseThrow(() -> new NotFoundException("Menu not found with id = " + adminMenuItemTo.menuId()));
+        Menu menu = menuRepository.getExisted(id);
         menuItem.setMenu(menu);
         menuItemRepository.save(menuItem);
     }
@@ -85,8 +80,7 @@ public class AdminMenuItemController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
         log.info("delete {}", id);
-        MenuItem menuItem = menuItemRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("MenuItem not found with id = " + id));
+        MenuItem menuItem = menuItemRepository.getExisted(id);
         menuItemRepository.delete(menuItem);
     }
 }
