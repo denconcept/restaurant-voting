@@ -31,7 +31,11 @@ public class MenuItem extends NamedEntity {
     private Menu menu;
 
     public MenuItem(String name, BigDecimal price, Menu menu) {
-        this.name = name;
+        this(null, name, price, menu);
+    }
+
+    public MenuItem(Integer id, String name, BigDecimal price, Menu menu) {
+        super(id, name);
         this.price = price;
         this.menu = menu;
     }

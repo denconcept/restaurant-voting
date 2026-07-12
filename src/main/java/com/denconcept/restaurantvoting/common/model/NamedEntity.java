@@ -22,6 +22,11 @@ public abstract class NamedEntity extends BaseEntity {
     @Column(nullable = false)
     protected String name;
 
+    public NamedEntity(Integer id, String name) {
+        super(id);
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return super.toString() + '[' + name + ']';

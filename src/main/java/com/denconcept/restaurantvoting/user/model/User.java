@@ -40,4 +40,11 @@ public class User extends BaseEntity {
             uniqueConstraints = @UniqueConstraint(name = "uk_user_role", columnNames = {"user_id", "role"}))
     @Column(name = "role")
     private Set<Role> roles = EnumSet.noneOf(Role.class);
+
+    public User(Integer id, String email, String password, Set<Role> roles) {
+        super(id);
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+    }
 }

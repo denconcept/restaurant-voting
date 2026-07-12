@@ -14,4 +14,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Restaurant extends NamedEntity {
+
+    public Restaurant(String name) {
+        this(null, name);
+    }
+
+    public Restaurant(Integer id, String name) {
+        super(id, name);
+    }
 }
