@@ -16,11 +16,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProfileRestaurantController {
 
+    public static final LocalDate TODAY = LocalDate.now();
     public static final String REST_URL = "/api/profile/restaurants";
     private final MenuService menuService;
 
     @GetMapping
     public List<RestaurantMenuTo> getTodayRestaurants() {
-        return menuService.getRestaurantsWithMenu(LocalDate.now());
+        return menuService.getRestaurantsWithMenu(TODAY);
     }
 }
