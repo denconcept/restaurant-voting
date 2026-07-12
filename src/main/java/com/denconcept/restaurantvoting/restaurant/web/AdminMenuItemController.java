@@ -70,7 +70,7 @@ public class AdminMenuItemController {
         MenuItem menuItem = menuItemRepository.getExisted(id);
         menuItem.setName(adminMenuItemTo.name());
         menuItem.setPrice(adminMenuItemTo.price());
-        Menu menu = menuRepository.getExisted(id);
+        Menu menu = menuRepository.getExisted(adminMenuItemTo.menuId());
         menuItem.setMenu(menu);
         menuItemRepository.save(menuItem);
     }
