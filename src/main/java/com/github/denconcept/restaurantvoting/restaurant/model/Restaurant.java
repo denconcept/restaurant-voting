@@ -3,13 +3,16 @@ package com.github.denconcept.restaurantvoting.restaurant.model;
 import com.github.denconcept.restaurantvoting.common.model.NamedEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "restaurant")
+@Table(name = "restaurant",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_restaurant_name", columnNames = {"name"}))
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
