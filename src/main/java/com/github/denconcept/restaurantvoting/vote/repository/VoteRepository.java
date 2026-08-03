@@ -4,9 +4,12 @@ import com.github.denconcept.restaurantvoting.common.BaseRepository;
 import com.github.denconcept.restaurantvoting.vote.model.Vote;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface VoteRepository extends BaseRepository<Vote> {
 
     Optional<Vote> findByUserIdAndVoteDate(Integer userId, LocalDate voteDate);
+
+    List<Vote> findAllByUserId(Integer userId);
 }

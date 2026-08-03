@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.github.denconcept.restaurantvoting.restaurant.web.ProfileRestaurantController.TODAY;
 
 @RestController
@@ -30,11 +32,18 @@ public class ProfileVoteController {
         voteService.vote(authUser.id(), restaurantId);
     }
 
-    @GetMapping
+    @GetMapping("/today")
     public VoteTo get(@AuthenticationPrincipal AuthUser authUser) {
         Vote vote = voteRepository.findByUserIdAndVoteDate(authUser.id(), TODAY)
                 .orElseThrow(() -> new NotFoundException("Today's vote not found"));
         Restaurant restaurant = vote.getRestaurant();
         return new VoteTo(vote.getVoteDate(), restaurant.getId(), restaurant.getName());
+    }
+
+    @GetMapping
+    public List<VoteTo> getAll(@AuthenticationPrincipal AuthUser authUser) {
+        return voteRepository.findAllByUserId(authUser.id()).stream()
+                .map(vote -> new VoteTo(vote.getVoteDate(), vote.getRestaurant().getId(), vote.getRestaurant().getName()))
+                .toList();
     }
 }
