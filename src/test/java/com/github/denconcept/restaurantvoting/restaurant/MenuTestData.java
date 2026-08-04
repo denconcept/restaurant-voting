@@ -16,7 +16,7 @@ public class MenuTestData {
     public static final LocalDate TOMORROW = TODAY.plusDays(1);
 
     public static AdminMenuTo getNewTo() {
-        return new AdminMenuTo(TOMORROW, MCDONALDS.getId());
+        return new AdminMenuTo(MCDONALDS_MENU.getId(), TOMORROW, MCDONALDS.getId());
     }
 
     public static Menu getNew() {
@@ -24,6 +24,6 @@ public class MenuTestData {
     }
 
     public static AdminMenuTo getUpdated() {
-        return new AdminMenuTo(TOMORROW, BURGER_KING.getId());
+        return new AdminMenuTo(MCDONALDS_MENU.getId(), TOMORROW, BURGER_KING.getId());
     }
 }

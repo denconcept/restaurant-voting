@@ -4,5 +4,5 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public record AdminMenuTo(@NotNull LocalDate menuDate, @NotNull Integer restaurantId) {
+public record AdminMenuTo(@NotNull Integer id, @NotNull LocalDate menuDate, @NotNull Integer restaurantId) {
 }

@@ -49,7 +49,7 @@ public class AdminMenuController {
     @GetMapping("/{id}")
     public AdminMenuTo get(@PathVariable Integer id) {
         Menu menu = menuRepository.getExisted(id);
-        return new AdminMenuTo(menu.getMenuDate(), menu.getRestaurant().getId());
+        return new AdminMenuTo(menu.getId(), menu.getMenuDate(), menu.getRestaurant().getId());
     }
 
     @GetMapping
@@ -57,7 +57,7 @@ public class AdminMenuController {
         List<Menu> menus = menuRepository.findAll();
         List<AdminMenuTo> adminMenuTos = new ArrayList<>();
         for (Menu menu : menus) {
-            AdminMenuTo adminMenuTo = new AdminMenuTo(menu.getMenuDate(), menu.getRestaurant().getId());
+            AdminMenuTo adminMenuTo = new AdminMenuTo(menu.getId(), menu.getMenuDate(), menu.getRestaurant().getId());
             adminMenuTos.add(adminMenuTo);
         }
         return adminMenuTos;

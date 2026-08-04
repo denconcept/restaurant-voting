@@ -13,7 +13,7 @@ public class MenuItemTestData {
     public static final MenuItem BIG_MAC = new MenuItem(1, "Big Mac", new BigDecimal("6.99"), MCDONALDS_MENU);
 
     public static AdminMenuItemTo getNewTo() {
-        return new AdminMenuItemTo("New", new BigDecimal("9.99"), MCDONALDS_MENU.getId());
+        return new AdminMenuItemTo(BIG_MAC.getId(), "New", new BigDecimal("9.99"), MCDONALDS_MENU.getId());
     }
 
     public static MenuItem getNew() {
@@ -21,6 +21,6 @@ public class MenuItemTestData {
     }
 
     public static AdminMenuItemTo getUpdated() {
-        return new AdminMenuItemTo("Updated", new BigDecimal("5"), BURGER_KING_MENU.getId());
+        return new AdminMenuItemTo(BIG_MAC.getId(), "Updated", new BigDecimal("5"), BURGER_KING_MENU.getId());
     }
 }

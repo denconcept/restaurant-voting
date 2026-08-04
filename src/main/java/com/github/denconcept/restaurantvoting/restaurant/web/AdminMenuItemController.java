@@ -47,7 +47,7 @@ public class AdminMenuItemController {
     @GetMapping("/{id}")
     public AdminMenuItemTo get(@PathVariable Integer id) {
         MenuItem menuItem = menuItemRepository.getExisted(id);
-        return new AdminMenuItemTo(menuItem.getName(), menuItem.getPrice(), menuItem.getMenu().getId());
+        return new AdminMenuItemTo(menuItem.getId(), menuItem.getName(), menuItem.getPrice(), menuItem.getMenu().getId());
     }
 
     @GetMapping
@@ -56,7 +56,7 @@ public class AdminMenuItemController {
         List<AdminMenuItemTo> menuItemTos = new ArrayList<>();
         for (MenuItem menuItem : menuItems) {
             AdminMenuItemTo adminMenuItemTo =
-                    new AdminMenuItemTo(menuItem.getName(), menuItem.getPrice(), menuItem.getMenu().getId());
+                    new AdminMenuItemTo(menuItem.getId(), menuItem.getName(), menuItem.getPrice(), menuItem.getMenu().getId());
             menuItemTos.add(adminMenuItemTo);
         }
         return menuItemTos;

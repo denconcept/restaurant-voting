@@ -8,6 +8,6 @@ import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
-public record AdminMenuItemTo(
-        @NoHtml @NotBlank @Size(max = 255) String name, @NotNull @Positive BigDecimal price, @NotNull Integer menuId) {
+public record AdminMenuItemTo(@NotNull Integer id, @NoHtml @NotBlank @Size(max = 255) String name,
+                              @NotNull @Positive BigDecimal price, @NotNull Integer menuId) {
 }
