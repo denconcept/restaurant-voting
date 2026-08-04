@@ -11,5 +11,5 @@ public interface VoteRepository extends BaseRepository<Vote> {
 
     Optional<Vote> findByUserIdAndVoteDate(Integer userId, LocalDate voteDate);
 
-    List<Vote> findAllByUserId(Integer userId);
+    List<Vote> findAllByUserIdOrderByVoteDateDesc(Integer userId);
 }

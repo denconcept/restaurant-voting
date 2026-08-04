@@ -3,8 +3,10 @@ package com.github.denconcept.restaurantvoting.vote.web;
 import com.github.denconcept.restaurantvoting.AbstractControllerTest;
 import com.github.denconcept.restaurantvoting.vote.model.Vote;
 import com.github.denconcept.restaurantvoting.vote.repository.VoteRepository;
+import com.github.denconcept.restaurantvoting.vote.to.VoteRequestTo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 import static com.github.denconcept.restaurantvoting.restaurant.RestaurantTestData.MCDONALDS;
@@ -26,7 +28,10 @@ class ProfileVoteControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(USER_MAIL)
     void vote() throws Exception {
-        mockMvc.perform(post(REST_URL).param("restaurantId", String.valueOf(MCDONALDS.getId())))
+        VoteRequestTo request = new VoteRequestTo(MCDONALDS.getId());
+        mockMvc.perform(post(REST_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isCreated());
         Vote vote = voteRepository.findByUserIdAndVoteDate(USER.getId(), TODAY).orElseThrow();
@@ -37,7 +42,10 @@ class ProfileVoteControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(USER_MAIL)
     void voteForNotFoundRestaurant() throws Exception {
-        mockMvc.perform(post(REST_URL).param("restaurantId", String.valueOf(NOT_FOUND_RESTAURANT_ID)))
+        VoteRequestTo request = new VoteRequestTo(NOT_FOUND_RESTAURANT_ID);
+        mockMvc.perform(post(REST_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
