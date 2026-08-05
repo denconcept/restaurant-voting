@@ -2,6 +2,8 @@ package com.github.denconcept.restaurantvoting.restaurant.web;
 
 import com.github.denconcept.restaurantvoting.restaurant.model.Restaurant;
 import com.github.denconcept.restaurantvoting.restaurant.repository.RestaurantRepository;
+import com.github.denconcept.restaurantvoting.restaurant.service.MenuService;
+import com.github.denconcept.restaurantvoting.restaurant.to.RestaurantMenuTo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.github.denconcept.restaurantvoting.common.validation.ValidationUtil.assureIdConsistent;
@@ -27,6 +30,7 @@ public class AdminRestaurantController {
 
     public static final String REST_URL = "/api/admin/restaurants";
     private final RestaurantRepository restaurantRepository;
+    private final MenuService menuService;
 
     @CacheEvict(value = MENUS_CACHE, allEntries = true)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -48,6 +52,11 @@ public class AdminRestaurantController {
     @GetMapping
     public List<Restaurant> getAll() {
         return restaurantRepository.findAll();
+    }
+
+    @GetMapping("/by-date")
+    public List<RestaurantMenuTo> getRestaurantsByDate(@RequestParam LocalDate date) {
+        return menuService.getRestaurantsWithMenu(date);
     }
 
     @CacheEvict(value = MENUS_CACHE, allEntries = true)
