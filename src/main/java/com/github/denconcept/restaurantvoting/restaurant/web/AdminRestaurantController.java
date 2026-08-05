@@ -3,7 +3,7 @@ package com.github.denconcept.restaurantvoting.restaurant.web;
 import com.github.denconcept.restaurantvoting.restaurant.model.Restaurant;
 import com.github.denconcept.restaurantvoting.restaurant.repository.RestaurantRepository;
 import com.github.denconcept.restaurantvoting.restaurant.service.MenuService;
-import com.github.denconcept.restaurantvoting.restaurant.to.RestaurantMenuTo;
+import com.github.denconcept.restaurantvoting.restaurant.to.AdminRestaurantMenuVoteTo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,8 +55,8 @@ public class AdminRestaurantController {
     }
 
     @GetMapping("/by-date")
-    public List<RestaurantMenuTo> getRestaurantsByDate(@RequestParam LocalDate date) {
-        return menuService.getRestaurantsWithMenu(date);
+    public List<AdminRestaurantMenuVoteTo> getRestaurantsByDate(@RequestParam LocalDate date) {
+        return menuService.getRestaurantsWithMenuAndVotes(date);
     }
 
     @CacheEvict(value = MENUS_CACHE, allEntries = true)
