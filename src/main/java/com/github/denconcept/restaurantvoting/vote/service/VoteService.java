@@ -17,13 +17,13 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
 import static com.github.denconcept.restaurantvoting.restaurant.service.MenuService.ADMIN_MENUS_CACHE;
 import static com.github.denconcept.restaurantvoting.restaurant.service.MenuService.MENUS_CACHE;
-import static com.github.denconcept.restaurantvoting.restaurant.web.ProfileRestaurantController.TODAY;
 
 @Slf4j
 @Service
@@ -41,20 +41,21 @@ public class VoteService {
     })
     @Transactional
     public void vote(Integer userId, Integer restaurantId) {
-        Optional<Vote> existingVote = voteRepository.findByUserIdAndVoteDate(userId, TODAY);
+        LocalDate today = LocalDate.now();
+        Optional<Vote> existingVote = voteRepository.findByUserIdAndVoteDate(userId, today);
         if (existingVote.isPresent()) {
             throw new IllegalRequestDataException("Today's vote already exists");
         }
         Restaurant restaurant = restaurantRepository.getExisted(restaurantId);
         User user = userRepository.getExisted(userId);
-        Vote vote = new Vote(TODAY, user, restaurant);
+        Vote vote = new Vote(today, user, restaurant);
         voteRepository.save(vote);
         log.info("User {} voted for restaurant {}", userId, restaurantId);
     }
 
     @Transactional(readOnly = true)
     public VoteTo getTodayVote(Integer userId) {
-        Vote vote = voteRepository.findByUserIdAndVoteDate(userId, TODAY)
+        Vote vote = voteRepository.findByUserIdAndVoteDate(userId, LocalDate.now())
                 .orElseThrow(() -> new NotFoundException("Today's vote not found"));
         Restaurant restaurant = vote.getRestaurant();
         return new VoteTo(vote.getVoteDate(), restaurant.getId(), restaurant.getName());
@@ -69,7 +70,7 @@ public class VoteService {
 
     @Transactional
     public void revote(Integer userId, Integer restaurantId) {
-        Vote existingVote = voteRepository.findByUserIdAndVoteDate(userId, TODAY)
+        Vote existingVote = voteRepository.findByUserIdAndVoteDate(userId, LocalDate.now())
                 .orElseThrow(() -> new NotFoundException("Today's vote not found"));
         checkVotingDeadline();
         Restaurant restaurant = restaurantRepository.getExisted(restaurantId);

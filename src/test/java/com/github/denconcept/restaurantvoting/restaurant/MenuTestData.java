@@ -7,9 +7,10 @@ import java.time.LocalDate;
 
 import static com.github.denconcept.restaurantvoting.restaurant.RestaurantTestData.BURGER_KING;
 import static com.github.denconcept.restaurantvoting.restaurant.RestaurantTestData.MCDONALDS;
-import static com.github.denconcept.restaurantvoting.restaurant.web.ProfileRestaurantController.TODAY;
 
 public class MenuTestData {
+
+    public static final LocalDate TODAY = LocalDate.now();
 
     public static final Menu MCDONALDS_MENU = new Menu(1, TODAY, MCDONALDS);
     public static final Menu BURGER_KING_MENU = new Menu(2, TODAY, BURGER_KING);

@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 
+import java.time.LocalDate;
+
 import static com.github.denconcept.restaurantvoting.restaurant.RestaurantTestData.MCDONALDS;
 import static com.github.denconcept.restaurantvoting.restaurant.RestaurantTestData.NOT_FOUND_RESTAURANT_ID;
-import static com.github.denconcept.restaurantvoting.restaurant.web.ProfileRestaurantController.TODAY;
 import static com.github.denconcept.restaurantvoting.user.UserTestData.USER;
 import static com.github.denconcept.restaurantvoting.user.UserTestData.USER_MAIL;
 import static com.github.denconcept.restaurantvoting.vote.web.ProfileVoteController.REST_URL;
@@ -34,7 +35,7 @@ class ProfileVoteControllerTest extends AbstractControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isCreated());
-        Vote vote = voteRepository.findByUserIdAndVoteDate(USER.getId(), TODAY).orElseThrow();
+        Vote vote = voteRepository.findByUserIdAndVoteDate(USER.getId(), LocalDate.now()).orElseThrow();
         assertEquals(MCDONALDS.getId(), vote.getRestaurant().getId());
         assertEquals(USER.getId(), vote.getUser().getId());
     }
