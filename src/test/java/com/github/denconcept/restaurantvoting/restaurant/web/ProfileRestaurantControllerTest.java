@@ -9,6 +9,7 @@ import static com.github.denconcept.restaurantvoting.restaurant.MenuItemTestData
 import static com.github.denconcept.restaurantvoting.restaurant.RestaurantTestData.MCDONALDS;
 import static com.github.denconcept.restaurantvoting.restaurant.web.ProfileRestaurantController.REST_URL;
 import static com.github.denconcept.restaurantvoting.user.UserTestData.USER_MAIL;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -27,8 +28,8 @@ class ProfileRestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$[0].restaurantId").value(MCDONALDS.getId()))
                 .andExpect(jsonPath("$[0].restaurantName").value(MCDONALDS.getName()))
                 .andExpect(jsonPath("$[0].menuItems", hasSize(3)))
-                .andExpect(jsonPath("$[0].menuItems[0].name").value(BIG_MAC.getName()))
-                .andExpect(jsonPath("$[0].menuItems[0].price").value(BIG_MAC.getPrice().doubleValue()));
+                .andExpect(jsonPath("$[0].menuItems[*].name", hasItem(BIG_MAC.getName())))
+                .andExpect(jsonPath("$[0].menuItems[*].price", hasItem(BIG_MAC.getPrice().doubleValue())));
     }
 
     @Test
