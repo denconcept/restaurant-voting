@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -70,16 +71,17 @@ public class VoteService {
 
     @Transactional
     public void revote(Integer userId, Integer restaurantId) {
-        Vote existingVote = voteRepository.findByUserIdAndVoteDate(userId, LocalDate.now())
+        LocalDateTime now = LocalDateTime.now();
+        Vote existingVote = voteRepository.findByUserIdAndVoteDate(userId, now.toLocalDate())
                 .orElseThrow(() -> new NotFoundException("Today's vote not found"));
-        checkVotingDeadline();
+        checkVotingDeadline(now.toLocalTime());
         Restaurant restaurant = restaurantRepository.getExisted(restaurantId);
         existingVote.setRestaurant(restaurant);
         log.info("User {} changed vote to restaurant {}", userId, restaurantId);
     }
 
-    private void checkVotingDeadline() {
-        if (!LocalTime.now().isBefore(DEADLINE)) {
+    private void checkVotingDeadline(LocalTime currentTime) {
+        if (!currentTime.isBefore(DEADLINE)) {
             log.warn("Attempt to change vote after {}", DEADLINE);
             throw new VotingDeadlineExceededException("You can't re-vote after " + DEADLINE);
         }
