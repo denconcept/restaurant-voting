@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import static com.github.denconcept.restaurantvoting.common.validation.ValidationUtil.assureIdConsistent;
 import static com.github.denconcept.restaurantvoting.common.validation.ValidationUtil.checkIsNew;
+import static com.github.denconcept.restaurantvoting.restaurant.service.MenuService.ADMIN_MENUS_CACHE;
 import static com.github.denconcept.restaurantvoting.restaurant.service.MenuService.MENUS_CACHE;
 
 @Slf4j
@@ -32,7 +34,10 @@ public class AdminRestaurantController {
     private final RestaurantRepository restaurantRepository;
     private final MenuService menuService;
 
-    @CacheEvict(value = MENUS_CACHE, allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = MENUS_CACHE, allEntries = true),
+            @CacheEvict(value = ADMIN_MENUS_CACHE, allEntries = true)
+    })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant);
@@ -59,7 +64,10 @@ public class AdminRestaurantController {
         return menuService.getRestaurantsWithMenuAndVotes(date);
     }
 
-    @CacheEvict(value = MENUS_CACHE, allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = MENUS_CACHE, allEntries = true),
+            @CacheEvict(value = ADMIN_MENUS_CACHE, allEntries = true)
+    })
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
@@ -70,7 +78,10 @@ public class AdminRestaurantController {
         restaurantRepository.save(existing);
     }
 
-    @CacheEvict(value = MENUS_CACHE, allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = MENUS_CACHE, allEntries = true),
+            @CacheEvict(value = ADMIN_MENUS_CACHE, allEntries = true)
+    })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {

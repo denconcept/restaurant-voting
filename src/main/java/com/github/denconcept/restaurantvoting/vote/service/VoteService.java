@@ -12,6 +12,8 @@ import com.github.denconcept.restaurantvoting.vote.repository.VoteRepository;
 import com.github.denconcept.restaurantvoting.vote.to.VoteTo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,8 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.github.denconcept.restaurantvoting.restaurant.service.MenuService.ADMIN_MENUS_CACHE;
+import static com.github.denconcept.restaurantvoting.restaurant.service.MenuService.MENUS_CACHE;
 import static com.github.denconcept.restaurantvoting.restaurant.web.ProfileRestaurantController.TODAY;
 
 @Slf4j
@@ -31,6 +35,10 @@ public class VoteService {
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
 
+    @Caching(evict = {
+            @CacheEvict(value = MENUS_CACHE, allEntries = true),
+            @CacheEvict(value = ADMIN_MENUS_CACHE, allEntries = true)
+    })
     @Transactional
     public void vote(Integer userId, Integer restaurantId) {
         Optional<Vote> existingVote = voteRepository.findByUserIdAndVoteDate(userId, TODAY);
