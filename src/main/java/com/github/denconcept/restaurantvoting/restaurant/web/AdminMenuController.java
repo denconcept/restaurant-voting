@@ -1,5 +1,6 @@
 package com.github.denconcept.restaurantvoting.restaurant.web;
 
+import com.github.denconcept.restaurantvoting.common.error.IllegalRequestDataException;
 import com.github.denconcept.restaurantvoting.restaurant.model.Menu;
 import com.github.denconcept.restaurantvoting.restaurant.model.Restaurant;
 import com.github.denconcept.restaurantvoting.restaurant.repository.MenuRepository;
@@ -42,7 +43,8 @@ public class AdminMenuController {
     public ResponseEntity<Void> createWithLocation(@Valid @RequestBody AdminMenuTo adminMenuTo) {
         log.info("create {}", adminMenuTo);
         LocalDate menuDate = adminMenuTo.menuDate();
-        Restaurant restaurant = restaurantRepository.getExisted(adminMenuTo.restaurantId());
+        Restaurant restaurant = restaurantRepository.findById(adminMenuTo.restaurantId())
+                .orElseThrow(() -> new IllegalRequestDataException("Restaurant not found"));
         Menu menu = new Menu(menuDate, restaurant);
         Menu created = menuRepository.save(menu);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -78,7 +80,8 @@ public class AdminMenuController {
         log.info("update {} with id = {}", adminMenuTo, id);
         Menu menu = menuRepository.getExisted(id);
         menu.setMenuDate(adminMenuTo.menuDate());
-        Restaurant restaurant = restaurantRepository.getExisted(adminMenuTo.restaurantId());
+        Restaurant restaurant = restaurantRepository.findById(adminMenuTo.restaurantId())
+                .orElseThrow(() -> new IllegalRequestDataException("Restaurant not found"));
         menu.setRestaurant(restaurant);
         menuRepository.save(menu);
     }
