@@ -47,8 +47,9 @@ public class VoteService {
         if (existingVote.isPresent()) {
             throw new IllegalRequestDataException("Today's vote already exists");
         }
-        Restaurant restaurant = restaurantRepository.getExisted(restaurantId);
-        User user = userRepository.getExisted(userId);
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new IllegalRequestDataException("Restaurant not found"));
+        User user = userRepository.getReferenceById(userId);
         Vote vote = new Vote(today, user, restaurant);
         voteRepository.save(vote);
         log.info("User {} voted for restaurant {}", userId, restaurantId);
@@ -75,7 +76,8 @@ public class VoteService {
         Vote existingVote = voteRepository.findByUserIdAndVoteDate(userId, now.toLocalDate())
                 .orElseThrow(() -> new NotFoundException("Today's vote not found"));
         checkVotingDeadline(now.toLocalTime());
-        Restaurant restaurant = restaurantRepository.getExisted(restaurantId);
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new IllegalRequestDataException("Restaurant not found"));
         existingVote.setRestaurant(restaurant);
         log.info("User {} changed vote to restaurant {}", userId, restaurantId);
     }
