@@ -19,8 +19,8 @@ public class RestaurantController {
     public static final String REST_URL = "/api/restaurants";
     private final RestaurantService restaurantService;
 
-    @GetMapping
-    public List<RestaurantMenuTo> getTodayRestaurants() {
+    @GetMapping("/with-menu-today")
+    public List<RestaurantMenuTo> getRestaurantsWithMenuToday() {
         return restaurantService.getRestaurantsWithMenu(LocalDate.now());
     }
 }

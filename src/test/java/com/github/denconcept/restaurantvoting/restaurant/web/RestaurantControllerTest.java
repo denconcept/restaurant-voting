@@ -19,8 +19,8 @@ class RestaurantControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(USER_MAIL)
-    void getTodayRestaurants() throws Exception {
-        mockMvc.perform(get(REST_URL))
+    void getRestaurantsWithMenuToday() throws Exception {
+        mockMvc.perform(get(REST_URL + "/with-menu-today"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -33,7 +33,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getTodayRestaurantsUnauthorized() throws Exception {
+    void getRestaurantsWithMenuTodayUnauthorized() throws Exception {
         mockMvc.perform(get(REST_URL))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
