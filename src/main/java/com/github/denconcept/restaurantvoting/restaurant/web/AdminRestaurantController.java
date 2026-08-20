@@ -2,7 +2,7 @@ package com.github.denconcept.restaurantvoting.restaurant.web;
 
 import com.github.denconcept.restaurantvoting.restaurant.model.Restaurant;
 import com.github.denconcept.restaurantvoting.restaurant.repository.RestaurantRepository;
-import com.github.denconcept.restaurantvoting.restaurant.service.MenuService;
+import com.github.denconcept.restaurantvoting.restaurant.service.RestaurantService;
 import com.github.denconcept.restaurantvoting.restaurant.to.AdminRestaurantMenuVoteTo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +21,8 @@ import java.util.List;
 
 import static com.github.denconcept.restaurantvoting.common.validation.ValidationUtil.assureIdConsistent;
 import static com.github.denconcept.restaurantvoting.common.validation.ValidationUtil.checkIsNew;
-import static com.github.denconcept.restaurantvoting.restaurant.service.MenuService.ADMIN_MENUS_CACHE;
-import static com.github.denconcept.restaurantvoting.restaurant.service.MenuService.MENUS_CACHE;
+import static com.github.denconcept.restaurantvoting.restaurant.service.RestaurantService.ADMIN_MENUS_CACHE;
+import static com.github.denconcept.restaurantvoting.restaurant.service.RestaurantService.MENUS_CACHE;
 
 @Slf4j
 @RestController
@@ -32,7 +32,7 @@ public class AdminRestaurantController {
 
     public static final String REST_URL = "/api/admin/restaurants";
     private final RestaurantRepository restaurantRepository;
-    private final MenuService menuService;
+    private final RestaurantService restaurantService;
 
     @Caching(evict = {
             @CacheEvict(value = MENUS_CACHE, allEntries = true),
@@ -61,7 +61,7 @@ public class AdminRestaurantController {
 
     @GetMapping("/by-date")
     public List<AdminRestaurantMenuVoteTo> getRestaurantsByDate(@RequestParam LocalDate date) {
-        return menuService.getRestaurantsWithMenuAndVotes(date);
+        return restaurantService.getRestaurantsWithMenuAndVotes(date);
     }
 
     @Caching(evict = {

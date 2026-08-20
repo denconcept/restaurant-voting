@@ -23,8 +23,8 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.github.denconcept.restaurantvoting.restaurant.service.MenuService.ADMIN_MENUS_CACHE;
-import static com.github.denconcept.restaurantvoting.restaurant.service.MenuService.MENUS_CACHE;
+import static com.github.denconcept.restaurantvoting.restaurant.service.RestaurantService.ADMIN_MENUS_CACHE;
+import static com.github.denconcept.restaurantvoting.restaurant.service.RestaurantService.MENUS_CACHE;
 
 @Slf4j
 @Service

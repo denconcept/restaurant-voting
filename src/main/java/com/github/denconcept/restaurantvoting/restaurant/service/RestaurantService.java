@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MenuService {
+public class RestaurantService {
 
     public static final String MENUS_CACHE = "userMenus";
     public static final String ADMIN_MENUS_CACHE = "adminMenus";

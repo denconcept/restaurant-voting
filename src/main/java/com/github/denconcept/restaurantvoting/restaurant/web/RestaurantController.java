@@ -1,6 +1,6 @@
 package com.github.denconcept.restaurantvoting.restaurant.web;
 
-import com.github.denconcept.restaurantvoting.restaurant.service.MenuService;
+import com.github.denconcept.restaurantvoting.restaurant.service.RestaurantService;
 import com.github.denconcept.restaurantvoting.restaurant.to.RestaurantMenuTo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -17,10 +17,10 @@ import java.util.List;
 public class RestaurantController {
 
     public static final String REST_URL = "/api/restaurants";
-    private final MenuService menuService;
+    private final RestaurantService restaurantService;
 
     @GetMapping
     public List<RestaurantMenuTo> getTodayRestaurants() {
-        return menuService.getRestaurantsWithMenu(LocalDate.now());
+        return restaurantService.getRestaurantsWithMenu(LocalDate.now());
     }
 }
