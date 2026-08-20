@@ -59,8 +59,8 @@ public class AdminRestaurantController {
         return restaurantRepository.findAll();
     }
 
-    @GetMapping("/by-date")
-    public List<AdminRestaurantMenuVoteTo> getRestaurantsByDate(@RequestParam LocalDate date) {
+    @GetMapping("/with-menu-and-votes")
+    public List<AdminRestaurantMenuVoteTo> getRestaurantsWithMenuAndVotesByDate(@RequestParam LocalDate date) {
         return restaurantService.getRestaurantsWithMenuAndVotes(date);
     }
 
