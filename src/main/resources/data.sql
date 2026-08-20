@@ -32,3 +32,6 @@ VALUES ('Big Mac', 6.99, 1),
        ('Italian B.M.T.', 7.99, 4),
        ('Turkey Breast Sandwich', 6.99, 4),
        ('Chocolate Chip Cookie', 1.49, 4);
+
+INSERT INTO VOTE (restaurant_id, user_id, vote_date)
+VALUES (1, 2, CURRENT_DATE);
