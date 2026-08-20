@@ -7,7 +7,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 
 import static com.github.denconcept.restaurantvoting.restaurant.MenuItemTestData.BIG_MAC;
 import static com.github.denconcept.restaurantvoting.restaurant.RestaurantTestData.MCDONALDS;
-import static com.github.denconcept.restaurantvoting.restaurant.web.ProfileRestaurantController.REST_URL;
+import static com.github.denconcept.restaurantvoting.restaurant.web.RestaurantController.REST_URL;
 import static com.github.denconcept.restaurantvoting.user.UserTestData.USER_MAIL;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-class ProfileRestaurantControllerTest extends AbstractControllerTest {
+class RestaurantControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(USER_MAIL)

@@ -12,11 +12,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = ProfileRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = RestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
-public class ProfileRestaurantController {
+public class RestaurantController {
 
-    public static final String REST_URL = "/api/profile/restaurants";
+    public static final String REST_URL = "/api/restaurants";
     private final MenuService menuService;
 
     @GetMapping
