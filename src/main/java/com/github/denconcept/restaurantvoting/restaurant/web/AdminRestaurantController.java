@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -38,9 +39,10 @@ public class AdminRestaurantController {
             @CacheEvict(value = MENUS_CACHE, allEntries = true),
             @CacheEvict(value = ADMIN_MENUS_CACHE, allEntries = true)
     })
+    @Transactional
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
-        log.info("create {}", restaurant);
+        log.info("Create {}", restaurant);
         checkIsNew(restaurant);
         Restaurant created = restaurantRepository.save(restaurant);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -49,16 +51,19 @@ public class AdminRestaurantController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
+    @Transactional(readOnly = true)
     @GetMapping("/{id}")
-    public Restaurant get(@PathVariable Integer id) {
+    public Restaurant get(@PathVariable("id") Integer id) {
         return restaurantRepository.getExisted(id);
     }
 
+    @Transactional(readOnly = true)
     @GetMapping
     public List<Restaurant> getAll() {
-        return restaurantRepository.findAll();
+        return restaurantRepository.findAllByOrderByIdAsc();
     }
 
+    @Transactional(readOnly = true)
     @GetMapping("/with-menu-and-votes")
     public List<AdminRestaurantMenuVoteTo> getRestaurantsWithMenuAndVotesByDate(@RequestParam LocalDate date) {
         return restaurantService.getRestaurantsWithMenuAndVotes(date);
@@ -68,24 +73,25 @@ public class AdminRestaurantController {
             @CacheEvict(value = MENUS_CACHE, allEntries = true),
             @CacheEvict(value = ADMIN_MENUS_CACHE, allEntries = true)
     })
+    @Transactional
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
-        log.info("update {} with id = {}", restaurant, id);
+    public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable("id") int id) {
+        log.info("Update {} with id = {}", restaurant, id);
         Restaurant existing = restaurantRepository.getExisted(id);
         assureIdConsistent(restaurant, id);
         existing.setName(restaurant.getName());
-        restaurantRepository.save(existing);
     }
 
     @Caching(evict = {
             @CacheEvict(value = MENUS_CACHE, allEntries = true),
             @CacheEvict(value = ADMIN_MENUS_CACHE, allEntries = true)
     })
+    @Transactional
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
-        log.info("delete {}", id);
+        log.info("Delete {}", id);
         Restaurant restaurant = restaurantRepository.getExisted(id);
         restaurantRepository.delete(restaurant);
     }
