@@ -4,7 +4,7 @@ import com.github.denconcept.restaurantvoting.restaurant.model.Menu;
 import com.github.denconcept.restaurantvoting.restaurant.model.Restaurant;
 import com.github.denconcept.restaurantvoting.restaurant.repository.MenuRepository;
 import com.github.denconcept.restaurantvoting.restaurant.to.AdminRestaurantMenuVoteTo;
-import com.github.denconcept.restaurantvoting.restaurant.to.MenuItemTo;
+import com.github.denconcept.restaurantvoting.restaurant.to.MenuItemClientTo;
 import com.github.denconcept.restaurantvoting.restaurant.to.RestaurantMenuTo;
 import com.github.denconcept.restaurantvoting.vote.model.Vote;
 import com.github.denconcept.restaurantvoting.vote.repository.VoteRepository;
@@ -58,9 +58,9 @@ public class RestaurantService {
                 .toList();
     }
 
-    private List<MenuItemTo> toMenuItems(Menu menu) {
+    private List<MenuItemClientTo> toMenuItems(Menu menu) {
         return menu.getMenuItems().stream()
-                .map(item -> new MenuItemTo(item.getName(), item.getPrice()))
+                .map(item -> new MenuItemClientTo(item.getName(), item.getPrice()))
                 .toList();
     }
 }

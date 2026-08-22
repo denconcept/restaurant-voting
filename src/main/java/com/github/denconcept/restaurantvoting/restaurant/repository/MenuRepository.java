@@ -6,9 +6,14 @@ import org.springframework.data.jpa.repository.EntityGraph;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface MenuRepository extends BaseRepository<Menu> {
 
     @EntityGraph(attributePaths = {"restaurant", "menuItems"})
     List<Menu> findAllByMenuDate(LocalDate menuDate);
+
+    Optional<Menu> findByIdAndRestaurantId(Integer id, Integer restaurantId);
+
+    List<Menu> findAllByRestaurantIdOrderByIdAsc(Integer restaurantId);
 }
