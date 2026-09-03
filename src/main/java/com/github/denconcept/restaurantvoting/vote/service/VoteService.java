@@ -5,6 +5,7 @@ import com.github.denconcept.restaurantvoting.common.error.NotFoundException;
 import com.github.denconcept.restaurantvoting.common.error.VotingDeadlineExceededException;
 import com.github.denconcept.restaurantvoting.restaurant.model.Restaurant;
 import com.github.denconcept.restaurantvoting.restaurant.repository.RestaurantRepository;
+import com.github.denconcept.restaurantvoting.restaurant.to.AdminResponseVotingResultTo;
 import com.github.denconcept.restaurantvoting.user.model.User;
 import com.github.denconcept.restaurantvoting.user.repository.UserRepository;
 import com.github.denconcept.restaurantvoting.vote.model.Vote;
@@ -21,7 +22,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.github.denconcept.restaurantvoting.restaurant.service.RestaurantService.ADMIN_MENUS_CACHE;
 import static com.github.denconcept.restaurantvoting.restaurant.service.RestaurantService.MENUS_CACHE;
@@ -80,6 +83,21 @@ public class VoteService {
                 .orElseThrow(() -> new IllegalRequestDataException("Restaurant not found"));
         existingVote.setRestaurant(restaurant);
         log.info("User {} changed vote to restaurant {}", userId, restaurantId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AdminResponseVotingResultTo> getResultsByDate(LocalDate date) {
+        log.info("Get voting results for date {}", date);
+        return voteRepository.findAllByVoteDate(date).stream()
+                .collect(Collectors.groupingBy(Vote::getRestaurant, Collectors.counting()))
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.<Restaurant, Long>comparingByValue().reversed())
+                .map(entry -> new AdminResponseVotingResultTo(
+                        entry.getKey().getId(),
+                        entry.getKey().getName(),
+                        entry.getValue().intValue()
+                )).toList();
     }
 
     private void checkVotingDeadline(LocalTime currentTime) {
