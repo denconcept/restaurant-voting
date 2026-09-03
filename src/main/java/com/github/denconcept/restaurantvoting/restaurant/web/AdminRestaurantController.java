@@ -2,8 +2,6 @@ package com.github.denconcept.restaurantvoting.restaurant.web;
 
 import com.github.denconcept.restaurantvoting.restaurant.model.Restaurant;
 import com.github.denconcept.restaurantvoting.restaurant.repository.RestaurantRepository;
-import com.github.denconcept.restaurantvoting.restaurant.service.RestaurantService;
-import com.github.denconcept.restaurantvoting.restaurant.to.AdminRestaurantMenuVoteTo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.List;
 
 import static com.github.denconcept.restaurantvoting.common.validation.ValidationUtil.assureIdConsistent;
@@ -33,7 +30,6 @@ public class AdminRestaurantController {
 
     public static final String REST_URL = "/api/admin/restaurants";
     private final RestaurantRepository restaurantRepository;
-    private final RestaurantService restaurantService;
 
     @Caching(evict = {
             @CacheEvict(value = MENUS_CACHE, allEntries = true),
@@ -41,14 +37,14 @@ public class AdminRestaurantController {
     })
     @Transactional
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
+    public ResponseEntity<Void> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
         log.info("Create {}", restaurant);
         checkIsNew(restaurant);
         Restaurant created = restaurantRepository.save(restaurant);
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(REST_URL + "/{id}")
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
                 .buildAndExpand(created.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(created);
+        return ResponseEntity.created(uriOfNewResource).build();
     }
 
     @Transactional(readOnly = true)
@@ -63,12 +59,6 @@ public class AdminRestaurantController {
         return restaurantRepository.findAllByOrderByIdAsc();
     }
 
-    @Transactional(readOnly = true)
-    @GetMapping("/with-menu-and-votes")
-    public List<AdminRestaurantMenuVoteTo> getRestaurantsWithMenuAndVotesByDate(@RequestParam LocalDate date) {
-        return restaurantService.getRestaurantsWithMenuAndVotes(date);
-    }
-
     @Caching(evict = {
             @CacheEvict(value = MENUS_CACHE, allEntries = true),
             @CacheEvict(value = ADMIN_MENUS_CACHE, allEntries = true)
@@ -76,7 +66,8 @@ public class AdminRestaurantController {
     @Transactional
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable("id") int id) {
+    public void update(@PathVariable("id") int id,
+                       @Valid @RequestBody Restaurant restaurant) {
         log.info("Update {} with id = {}", restaurant, id);
         Restaurant existing = restaurantRepository.getExisted(id);
         assureIdConsistent(restaurant, id);
