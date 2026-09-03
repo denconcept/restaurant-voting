@@ -5,7 +5,6 @@ import com.github.denconcept.restaurantvoting.restaurant.model.Restaurant;
 public class RestaurantTestData {
 
     public static final Restaurant MCDONALDS = new Restaurant(1, "McDonalds");
-    public static final Restaurant BURGER_KING = new Restaurant(2, "Burger King");
     public static final int NOT_FOUND_RESTAURANT_ID = 999;
 
     public static Restaurant getNew() {

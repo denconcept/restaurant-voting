@@ -23,7 +23,8 @@ public class ProfileVoteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void vote(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody VoteRequestTo voteRequestTo) {
+    public void vote(@AuthenticationPrincipal AuthUser authUser,
+                     @Valid @RequestBody VoteRequestTo voteRequestTo) {
         voteService.vote(authUser.id(), voteRequestTo.restaurantId());
     }
 
@@ -39,7 +40,8 @@ public class ProfileVoteController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void revote(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody VoteRequestTo voteRequestTo) {
+    public void revote(@AuthenticationPrincipal AuthUser authUser,
+                       @Valid @RequestBody VoteRequestTo voteRequestTo) {
         voteService.revote(authUser.id(), voteRequestTo.restaurantId());
     }
 }
