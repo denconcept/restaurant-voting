@@ -12,11 +12,16 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "menu_item",
-        uniqueConstraints = @UniqueConstraint(
-                name = "uk_menu_item_menu_name", columnNames = {"menu_id", "name"}))
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_menu_item_restaurant_date_name",
+                        columnNames = {"restaurant_id", "menu_date", "name"}
+                )
+        })
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,17 +34,22 @@ public class MenuItem extends NamedEntity {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", nullable = false)
+    @JoinColumn(name = "restaurant_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Menu menu;
+    private Restaurant restaurant;
 
-    public MenuItem(String name, BigDecimal price, Menu menu) {
-        this(null, name, price, menu);
+    @NotNull
+    @Column(name = "menu_date", nullable = false)
+    private LocalDate menuDate;
+
+    public MenuItem(String name, BigDecimal price, Restaurant restaurant, LocalDate menuDate) {
+        this(null, name, price, restaurant, menuDate);
     }
 
-    public MenuItem(Integer id, String name, BigDecimal price, Menu menu) {
+    public MenuItem(Integer id, String name, BigDecimal price, Restaurant restaurant, LocalDate menuDate) {
         super(id, name);
         this.price = price;
-        this.menu = menu;
+        this.restaurant = restaurant;
+        this.menuDate = menuDate;
     }
 }

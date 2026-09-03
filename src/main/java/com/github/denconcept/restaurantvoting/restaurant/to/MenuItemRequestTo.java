@@ -7,6 +7,10 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
-public record MenuItemCreateUpdateTo(@NoHtml @NotBlank @Size(max = 255) String name, @NotNull @Positive BigDecimal price) {
+public record MenuItemRequestTo(
+        @NoHtml @NotBlank @Size(max = 255) String name,
+        @NotNull @Positive BigDecimal price,
+        @NotNull LocalDate date) {
 }

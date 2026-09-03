@@ -13,25 +13,19 @@ VALUES ('McDonalds'),
        ('KFC'),
        ('Subway');
 
-INSERT INTO MENU (menu_date, restaurant_id)
-VALUES (CURRENT_DATE, 1),
-       (CURRENT_DATE, 2),
-       (CURRENT_DATE, 3),
-       (CURRENT_DATE, 4);
-
-INSERT INTO MENU_ITEM (name, price, menu_id)
-VALUES ('Big Mac', 6.99, 1),
-       ('French Fries', 2.99, 1),
-       ('Coca-Cola', 1.99, 1),
-       ('Whopper', 7.49, 2),
-       ('Onion Rings', 3.49, 2),
-       ('Sprite', 1.99, 2),
-       ('Original Recipe Chicken', 8.99, 3),
-       ('Mashed Potatoes', 2.49, 3),
-       ('Pepsi', 1.99, 3),
-       ('Italian B.M.T.', 7.99, 4),
-       ('Turkey Breast Sandwich', 6.99, 4),
-       ('Chocolate Chip Cookie', 1.49, 4);
+INSERT INTO MENU_ITEM (name, price, restaurant_id, menu_date)
+VALUES ('Big Mac', 6.99, 1, CURRENT_DATE),
+       ('French Fries', 2.99, 1, CURRENT_DATE),
+       ('Coca-Cola', 1.99, 1, CURRENT_DATE),
+       ('Whopper', 7.49, 2, CURRENT_DATE),
+       ('Onion Rings', 3.49, 2, CURRENT_DATE),
+       ('Sprite', 1.99, 2, CURRENT_DATE),
+       ('Original Recipe Chicken', 8.99, 3, CURRENT_DATE),
+       ('Mashed Potatoes', 2.49, 3, CURRENT_DATE),
+       ('Pepsi', 1.99, 3, CURRENT_DATE),
+       ('Italian B.M.T.', 7.99, 4, CURRENT_DATE),
+       ('Turkey Breast Sandwich', 6.99, 4, CURRENT_DATE),
+       ('Chocolate Chip Cookie', 1.49, 4, CURRENT_DATE);
 
 INSERT INTO VOTE (restaurant_id, user_id, vote_date)
-VALUES (1, 2, CURRENT_DATE);
+VALUES (3, 2, CURRENT_DATE);
