@@ -59,17 +59,16 @@ public class VoteService {
     }
 
     @Transactional(readOnly = true)
-    public VoteTo getTodayVote(Integer userId) {
-        Vote vote = voteRepository.findByUserIdAndVoteDate(userId, LocalDate.now())
-                .orElseThrow(() -> new NotFoundException("Today's vote not found"));
-        Restaurant restaurant = vote.getRestaurant();
-        return new VoteTo(vote.getVoteDate(), restaurant.getId(), restaurant.getName());
+    public VoteTo getByDate(Integer userId, LocalDate date) {
+        Vote vote = voteRepository.findByUserIdAndVoteDate(userId, date)
+                .orElseThrow(() -> new NotFoundException("Vote not found for date " + date));
+        return createTo(vote);
     }
 
     @Transactional(readOnly = true)
     public List<VoteTo> getAll(Integer userId) {
         return voteRepository.findAllByUserIdOrderByVoteDateDesc(userId).stream()
-                .map(vote -> new VoteTo(vote.getVoteDate(), vote.getRestaurant().getId(), vote.getRestaurant().getName()))
+                .map(this::createTo)
                 .toList();
     }
 
@@ -98,6 +97,11 @@ public class VoteService {
                         entry.getKey().getName(),
                         entry.getValue().intValue()
                 )).toList();
+    }
+
+    private VoteTo createTo(Vote vote) {
+        Restaurant restaurant = vote.getRestaurant();
+        return new VoteTo(vote.getVoteDate(), restaurant.getId(), restaurant.getName());
     }
 
     private void checkVotingDeadline(LocalTime currentTime) {

@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -28,12 +29,13 @@ public class ProfileVoteController {
         voteService.vote(authUser.id(), voteRequestTo.restaurantId());
     }
 
-    @GetMapping("/today")
-    public VoteTo get(@AuthenticationPrincipal AuthUser authUser) {
-        return voteService.getTodayVote(authUser.id());
+    @GetMapping
+    public VoteTo getByDate(@AuthenticationPrincipal AuthUser authUser,
+                            @RequestParam(required = false) LocalDate date) {
+        return voteService.getByDate(authUser.id(), date == null ? LocalDate.now() : date);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<VoteTo> getAll(@AuthenticationPrincipal AuthUser authUser) {
         return voteService.getAll(authUser.id());
     }
