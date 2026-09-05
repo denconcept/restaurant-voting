@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,9 +31,9 @@ public class ProfileVoteController {
     }
 
     @GetMapping
-    public VoteTo getByDate(@AuthenticationPrincipal AuthUser authUser,
-                            @RequestParam(required = false) LocalDate date) {
-        return voteService.getByDate(authUser.id(), date == null ? LocalDate.now() : date);
+    public ResponseEntity<VoteTo> getByDate(@AuthenticationPrincipal AuthUser authUser,
+                                            @RequestParam(required = false) LocalDate date) {
+        return ResponseEntity.of(voteService.getByDate(authUser.id(), date == null ? LocalDate.now() : date));
     }
 
     @GetMapping("/all")

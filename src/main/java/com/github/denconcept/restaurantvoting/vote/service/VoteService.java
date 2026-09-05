@@ -59,10 +59,16 @@ public class VoteService {
     }
 
     @Transactional(readOnly = true)
-    public VoteTo getByDate(Integer userId, LocalDate date) {
-        Vote vote = voteRepository.findByUserIdAndVoteDate(userId, date)
-                .orElseThrow(() -> new NotFoundException("Vote not found for date " + date));
-        return createTo(vote);
+    public Optional<VoteTo> getByDate(Integer userId, LocalDate date) {
+        return voteRepository.findByUserIdAndVoteDate(userId, date)
+                .map(vote -> {
+                    Restaurant restaurant = vote.getRestaurant();
+                    return new VoteTo(
+                            vote.getVoteDate(),
+                            restaurant.getId(),
+                            restaurant.getName()
+                    );
+                });
     }
 
     @Transactional(readOnly = true)
