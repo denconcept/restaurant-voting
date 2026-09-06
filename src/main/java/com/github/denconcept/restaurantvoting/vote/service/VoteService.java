@@ -18,6 +18,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -34,10 +35,11 @@ import static com.github.denconcept.restaurantvoting.restaurant.service.Restaura
 @RequiredArgsConstructor
 public class VoteService {
 
-    private static final LocalTime DEADLINE = LocalTime.of(11, 0);
     private final VoteRepository voteRepository;
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
+    private static final LocalTime DEADLINE = LocalTime.of(11, 0);
+    private final Clock clock;
 
     @Caching(evict = {
             @CacheEvict(value = MENUS_CACHE, allEntries = true),
@@ -45,7 +47,7 @@ public class VoteService {
     })
     @Transactional
     public void vote(Integer userId, Integer restaurantId) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(clock);
         Optional<Vote> existingVote = voteRepository.findByUserIdAndVoteDate(userId, today);
         if (existingVote.isPresent()) {
             throw new IllegalRequestDataException("Today's vote already exists");
@@ -80,7 +82,7 @@ public class VoteService {
 
     @Transactional
     public void revote(Integer userId, Integer restaurantId) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(clock);
         Vote existingVote = voteRepository.findByUserIdAndVoteDate(userId, now.toLocalDate())
                 .orElseThrow(() -> new NotFoundException("Today's vote not found"));
         checkVotingDeadline(now.toLocalTime());
