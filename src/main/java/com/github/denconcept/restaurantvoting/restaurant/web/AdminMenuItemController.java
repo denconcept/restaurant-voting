@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +23,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.github.denconcept.restaurantvoting.restaurant.service.RestaurantService.ADMIN_MENUS_CACHE;
-import static com.github.denconcept.restaurantvoting.restaurant.service.RestaurantService.MENUS_CACHE;
+import static com.github.denconcept.restaurantvoting.common.CacheNames.USER_RESTAURANTS_CACHE;
 
 @Slf4j
 @RestController
@@ -37,10 +35,7 @@ public class AdminMenuItemController {
     private final RestaurantRepository restaurantRepository;
     private final MenuItemRepository menuItemRepository;
 
-    @Caching(evict = {
-            @CacheEvict(value = MENUS_CACHE, allEntries = true),
-            @CacheEvict(value = ADMIN_MENUS_CACHE, allEntries = true)
-    })
+    @CacheEvict(value = USER_RESTAURANTS_CACHE, allEntries = true)
     @Transactional
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createWithLocation(@PathVariable("restaurantId") Integer restaurantId,
@@ -79,10 +74,7 @@ public class AdminMenuItemController {
                 .collect(Collectors.toList());
     }
 
-    @Caching(evict = {
-            @CacheEvict(value = MENUS_CACHE, allEntries = true),
-            @CacheEvict(value = ADMIN_MENUS_CACHE, allEntries = true)
-    })
+    @CacheEvict(value = USER_RESTAURANTS_CACHE, allEntries = true)
     @Transactional
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -97,10 +89,7 @@ public class AdminMenuItemController {
         menuItem.setMenuDate(menuItemRequestTo.date());
     }
 
-    @Caching(evict = {
-            @CacheEvict(value = MENUS_CACHE, allEntries = true),
-            @CacheEvict(value = ADMIN_MENUS_CACHE, allEntries = true)
-    })
+    @CacheEvict(value = USER_RESTAURANTS_CACHE, allEntries = true)
     @Transactional
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

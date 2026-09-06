@@ -16,16 +16,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.github.denconcept.restaurantvoting.common.CacheNames.USER_RESTAURANTS_CACHE;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class RestaurantService {
 
-    public static final String MENUS_CACHE = "userMenus";
-    public static final String ADMIN_MENUS_CACHE = "adminMenus";
     private final MenuItemRepository menuItemRepository;
 
-    @Cacheable(MENUS_CACHE)
+    @Cacheable(value = USER_RESTAURANTS_CACHE, key = "#menuDate")
     @Transactional(readOnly = true)
     public List<ClientResponseRestaurantMenuItemTo> getRestaurantsWithMenu(LocalDate menuDate) {
         log.info("Get restaurants with menu for {}", menuDate);
