@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,9 +19,10 @@ public class AdminVoteController {
 
     public static final String REST_URL = "/api/admin/voting-results";
     private final VoteService voteService;
+    private final Clock clock;
 
     @GetMapping
     public List<AdminResponseVotingResultTo> getTodayResults() {
-        return voteService.getResultsByDate(LocalDate.now());
+        return voteService.getResultsByDate(LocalDate.now(clock));
     }
 }

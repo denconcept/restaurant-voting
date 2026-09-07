@@ -21,9 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -86,16 +84,7 @@ public class VoteService {
     @Transactional(readOnly = true)
     public List<AdminResponseVotingResultTo> getResultsByDate(LocalDate date) {
         log.info("Get voting results for date {}", date);
-        return voteRepository.findAllByVoteDate(date).stream()
-                .collect(Collectors.groupingBy(Vote::getRestaurant, Collectors.counting()))
-                .entrySet()
-                .stream()
-                .sorted(Map.Entry.<Restaurant, Long>comparingByValue().reversed())
-                .map(entry -> new AdminResponseVotingResultTo(
-                        entry.getKey().getId(),
-                        entry.getKey().getName(),
-                        entry.getValue().intValue()
-                )).toList();
+        return voteRepository.findVotingResultsByDate(date);
     }
 
     private VoteTo createTo(Vote vote) {
