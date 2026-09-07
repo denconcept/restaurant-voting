@@ -53,7 +53,7 @@ public class VoteService {
 
     @Transactional(readOnly = true)
     public Optional<VoteTo> getByDate(Integer userId, LocalDate date) {
-        return voteRepository.findByUserIdAndVoteDate(userId, date)
+        return voteRepository.findWithRestaurantByUserIdAndVoteDate(userId, date)
                 .map(vote -> {
                     Restaurant restaurant = vote.getRestaurant();
                     return new VoteTo(
